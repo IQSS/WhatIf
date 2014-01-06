@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>WhatIf Software Website</title>
+<script language='Javascript' src='/gking.js'></script></HEAD>
+
+<script language="Javascript">displayHeader("WhatIf: Software for Evaluating Counterfactuals")</script>
+
+<a
+href="http://www.polsci.ucsb.edu/faculty/hstoll/">Heather
+Stoll</a>, <a href="http://GKing.Harvard.edu">Gary King</a>, 
+<a href="http://polisci.ucsd.edu/faculty/zeng.htm">Langche Zeng</a>
+<br /><br />
+<!-- rbuild: replace 'Version:' '</b>' version -->
+<b>Version:1.5-5</b>
+
+<table border='0' cellpadding='0' cellspacing='8'><tr><td valign='top' width='250'>
+<p !style="float:left; width: 250; margin: 1em;"> <img
+src="brabazon_pig_500.jpg" width="250" /> <br /><small><em>What would happen if pigs
+could fly?</em> The first known attempt to answer this question was in
+1909 by J.T.C. Moore-Brabazon, who earlier the same year was the first
+British pilot to fly in Britain. On the left is Moore-Brabazon in his
+personal French-built Voisin aero plane. On the right is a pig in a
+wicker basket behind a sign that says "I am the first pig to
+fly."</small> </p>
+
+</td><td valign='top'>
+
+<p>Inferences about counterfactuals are essential for prediction,
+answering "what if" questions, and estimating causal effects. However,
+when the counterfactuals posed are too far from the data at hand,
+conclusions drawn from well-specified statistical analyses become
+based largely on speculation hidden in convenient modeling assumptions
+that few would be willing to defend. Unfortunately, standard
+statistical approaches assume the veracity of the model rather than
+revealing the degree of model-dependence, which makes this problem
+hard to detect. WhatIf offers easy-to-apply methods to evaluate
+counterfactuals that do not require sensitivity testing over specified
+classes of models. If an analysis fails the tests offered here, then
+we know that substantive inferences will be sensitive to at least some
+modeling choices that are not based on empirical evidence, no matter
+what method of inference one chooses to use. WhatIf is also used to
+identify the areas of common support in causal inference. It is
+implemented in <a href="http://gking.harvard.edu/matchit">MatchIt</a> and can easily process
+<a href="http://gking.harvard.edu/zelig">Zelig</a> output objects so that counterfactuals can
+be evaluated, prior to computing quantities of interest, with only one
+additional command.
+
+<p>WhatIf implements the methods for evaluating counterfactuals discussed in
+ Gary King and Langche Zeng, 2006, "<a
+ href="http://gking.harvard.edu/files/abs/counterft-abs.shtml">The Dangers of Extreme
+  Counterfactuals</a>," <em>Political Analysis</em> 14 (2): 131-159; 
+  and Gary King and Langche Zeng, 2007, "<a
+  href="http://gking.harvard.edu/files/abs/counterf-abs.shtml">When Can History Be Our Guide?
+  The Pitfalls of Counterfactual Inference</a>," <em>International
+  Studies Quarterly</em> 51 (March):  183-210.  
+
+<ul>
+<li>Documentation: <a href="http://gking.harvard.edu/whatif/docs/">Read on-line</a> or <a
+href="http://gking.harvard.edu/whatif/docs/whatif.pdf">Download PDF</a>
+
+<li><a
+href="http://gking.harvard.edu/whatif/docs/">Installation</a>
+
+<li>All questions, bugs and requests: WhatIf Mailing List: <a
+href="http://lists.hmdc.harvard.edu/index.cgi?info=whatif"
+target="gkingext">[Un]Subscribe</a>, or <a
+href="http://lists.hmdc.harvard.edu/lists/whatif/"
+target="gkingext">Browse/Search Archives</a>
+
+<li>An <a
+href="http://www.cse.unsw.edu.au/~lambert/java/3d/hull.html" target="gkingext">animation</a>
+useful for understanding the concept of a convex hull.
+
+<li>Presentations.  Stoll: <a href="http://gking.harvard.edu/whatif/2006_QMSS.ppt">PPT</a>,
+    King: <a href="http://gking.harvard.edu/talks/cfMtlk.pdf">PDF</a>
+    
+</ul>
+
+</td>
+</tr>
+</table>
+
+<!-- <li><a href="http://gking.harvard.edu/whatif/docs/Frequently_Asked_Quest.html">Frequently
+Asked Questions</a> -->
+
+
+
+<script language="Javascript">displayFooter()</script></BODY>
+</html>

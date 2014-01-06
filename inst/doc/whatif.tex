@@ -1,0 +1,1125 @@
+\documentclass[oneside,letterpaper,titlepage]{article}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{natbib} 
+\usepackage[reqno]{amsmath}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{epsf}
+\usepackage{url}
+\usepackage{html}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{vmargin}
+\topmargin=0in
+
+%\setpapersize{USletter}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\pagestyle{myheadings}
+\htmladdtonavigation{
+  \htmladdnormallink{%
+    \htmladdimg{http://gking.harvard.edu/pics/home.gif}}
+  {http://gking.harvard.edu/}}
+\newcommand{\hlink}{\htmladdnormallink}
+
+\bodytext{ BACKGROUND="http://gking.harvard.edu/pics/temple.jpg"}
+\setcounter{tocdepth}{3}
+
+\newcommand{\WhatIf}{\textsc{WhatIf}}
+
+\title{\WhatIf: Software for Evaluating Counterfactuals\thanks{Available from
+    http://GKing.Harvard.Edu/whatif.}}
+
+\author{Heather Stoll\thanks{Assistant Professor of Political Science,
+    University of California, Santa Barbara (3713 Ellison Hall,
+    University of California, Santa Barbara, CA 93106;
+    \texttt{http://www.polsci.ucsb.edu/faculty/hstoll/},
+    \texttt{hstoll@polsci.ucsb.edu}).}  \and %
+  Gary King\thanks{David Florence Professor of Government, Harvard
+    University (Institute for Quantitative Social Science, 34 Kirkland
+    Street, Harvard University, Cambridge MA 02138;
+    \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu},
+    (617) 495-2027).}  \and %
+  Langche Zeng\thanks{Professor of Political Science, University of
+    California-San Diego (Department of Political Science, University
+    of California, San Diego, 9500 Gilman Drive, La Jolla, CA
+    92093-0521, \texttt{zeng@ucsd.edu}).}}
+
+% rbuild: replace 'Version ' '\\' Version
+\date{Version 1.5-5\\ \today}
+
+%
+\makeindex
+
+\begin{document}\maketitle
+
+\begin{rawhtml} 
+  <p> [Also available is a down-loadable <a
+  href="/whatif/docs/whatif.pdf">PDF</a> version of this entire
+  document]
+\end{rawhtml}
+
+\tableofcontents
+\clearpage
+
+\section{Introduction}
+
+\WhatIf\ implements the methods for evaluating counterfactuals
+introduced in \citet{KinZen06} and \citet{KinZen07}:
+\begin{quote}
+  Gary King and Langche Zeng.  2006. ``\hlink{The Dangers of Extreme
+    Counterfactuals}{http://GKing.Harvard.Edu/files/abs/counterft-abs.shtml},'' 
+    \emph{Political
+    Analysis} 14 (2):  131--159.
+\end{quote}
+and
+\begin{quote}
+  Gary King and Langche Zeng.  2007.  ``\hlink{When Can History Be
+    Our Guide?  The Pitfalls of Counterfactual
+    Inference}{http://GKing.Harvard.Edu/files/abs/counterf-abs.shtml},'' \emph{International
+    Studies Quarterly} 51 (March):  183--210.
+\end{quote}
+The two papers overlap, with the first containing all the proofs and
+technical material and the second having more pedagogical material and
+examples.
+
+Inferences about counterfactuals are essential for prediction,
+answering ``what if'' questions, and estimating causal effects.
+However, when the counterfactuals posed are too far from the data at
+hand, conclusions drawn from well-specified statistical analyses
+become based largely on speculation hidden in convenient modeling
+assumptions that few would be willing to defend.  Unfortunately,
+standard statistical approaches assume the veracity of the model
+rather than revealing the degree of model dependence, which makes this
+problem hard to detect.  
+
+\WhatIf\ offers easy-to-apply methods to evaluate counterfactuals that
+do not require sensitivity testing over specified classes of models.
+If an analysis fails the tests offered here, then we know that
+substantive inferences will be sensitive to at least some modeling
+choices that are not based on empirical evidence, no matter what
+method of inference one chooses to use.  Specifically, \WhatIf\ will
+indicate whether a given counterfactual is an extrapolation (and
+therefore risking more model dependence) or a (safer) interpolation.
+Using an algorithm developed in \citet{KinZen06} to identify whether
+counterfactual points are within the convex hull of the observed data,
+this is feasible even for large numbers of explanatory variables.  It
+will also compute either the Gower or Euclidian distances from the
+counterfactuals to each observed data point.  The convex hull test can
+additionally be used to approximate the common support of the
+treatment and control groups in causal inference.  Numerical and
+graphic summaries are offered.
+
+\WhatIf\ has been incorporated in \hlink{MatchIt}{/matchit}, and also
+works easily with \hlink{Zelig}{/zelig} output
+\citep{HoImaKin07,ImaKinLau06,ImaKinLau07}.
+
+\section{Installation}
+
+\WhatIf\ requires \texttt{R} version 2.3.1 or later, available from
+CRAN (\url{http://cran.r-project.org/}), and the package
+\texttt{lpSolve}, also available from CRAN.  Installation of \WhatIf\ 
+differs slightly by operating system.
+
+\subsection{Windows}
+
+Begin the installation process by launching \texttt{R}.  To install
+the package \WhatIf\ as well as the package that it depends upon,
+\texttt{lpSolve}, type:
+\begin{verbatim}
+  > install.packages("WhatIf", dependencies = TRUE)
+\end{verbatim}
+at the \texttt{R} command prompt.  This command installs the packages
+from the CRAN respository set as part of your \texttt{R} options.  You
+can see what its current value is by calling
+\begin{verbatim}
+  > getOption("repos")
+\end{verbatim}
+The default, `factory fresh' setting will usually prompt you to select
+a CRAN mirror.  One alternative for installing the package \WhatIf\ is
+to use Gary King's website as the repository.  You can do this by
+typing:
+\begin{verbatim}
+  > install.packages("WhatIf", repos = "http://gking.harvard.edu")
+\end{verbatim}
+You will then need to install the package \texttt{lpSolve} from CRAN by
+typing:
+\begin{verbatim}
+  > install.packages("lpSolve")
+\end{verbatim}
+A second alternative is to download the Windows bundle from
+\url{http://GKing.Harvard.Edu/bin/windows/contrib} and use the
+\texttt{R} pull-down menu commands for installing a package from a zip
+file.  You again will then need to install \texttt{lpSolve}, which can be
+done either by typing the command given above at the command prompt or by
+using the pull-down menus.  Finally, you then only need to type:
+\begin{verbatim}
+  > library("WhatIf") 
+\end{verbatim}
+from within \texttt{R} to load the \WhatIf\ package, after which you
+may begin working with it.
+
+\subsection{Linux/Unix}
+
+You initially need to create both local \texttt{R} and local
+\texttt{R} library directories if they do not already exist.  At the
+Linux/Unix command prompt in your home directory, do this by typing:
+  \begin{verbatim}
+  > mkdir ~/.R ~/.R/library
+  \end{verbatim}
+Then open the `\texttt{.Renviron}' file that resides in your home directory,
+creating it if necessary, and add the line:
+  \begin{verbatim}
+  R_LIBS = "~/.R/library"
+  \end{verbatim}
+using your preferred text editor.  These steps only need to be
+performed once.  To install the package \WhatIf\ as well as the
+package that it depends upon, \texttt{lpSolve}, type:
+\begin{verbatim}
+  > install.packages("WhatIf", dependencies = TRUE)
+\end{verbatim}
+at the \texttt{R} command prompt.  This command installs the packages
+from the CRAN respository set as part of your \texttt{R} options.  You
+can see what its current value is by calling
+\begin{verbatim}
+  > getOption("repos")
+\end{verbatim}
+The default, `factory fresh' setting will usually prompt you to select
+a CRAN mirror.  One alternative for installing the package \WhatIf\ is
+to use Gary King's website as the repository.  You can do this by
+typing:
+\begin{verbatim}
+  > install.packages("WhatIf", repos = "http://gking.harvard.edu")
+\end{verbatim}
+A second alternative is to download the Linux/Unix bundle
+`\texttt{WhatIf\_XX.tar.gz}', available from
+\url{http://gking.harvard.edu/R/CRAN/src/contrib/}, and place it in
+your home directory.  Note that `\texttt{XX}' is the current version
+number.  Then, at the Linux/Unix command line from your home
+directory, type
+\begin{verbatim}
+  > R CMD INSTALL WhatIf_XX.tar.gz
+\end{verbatim}
+to install the package.  Finally, you then only need to type:
+\begin{verbatim}
+  > library("WhatIf") 
+\end{verbatim}
+from within \texttt{R} to load the \WhatIf\ package, after which you
+may begin working with it.
+
+\section{Examples}
+
+\subsection{Counterfactuals about U.N. Peacekeeping} \label{sec:cfeval}
+
+This section illustrates the workings of \WhatIf\ with the empirical
+example in Section $2.4$ of \citet{KinZen06}, which evaluates
+counterfactuals about the causal impact of U.N.\ peacekeeping
+operations on peacebuilding success.
+
+The factual data set has 124 observations (including two with missing
+values) on ten covariates as well as on the key causal variable,
+\texttt{untype4}, which is a dummy variable.  The counterfactual data
+set is the observed covariate data set with \texttt{untype4} replaced
+with $1 - $\texttt{untype4}.  We list-wise delete the two
+counterfactuals that are not fully observed.  We then save the two
+data sets, one factual and the other counterfactual, as text files in
+our current working directory and name them `\texttt{peacef.txt}' and
+`\texttt{peacecf.txt}', respectively.  The first five rows of
+`\texttt{peacef.txt}' look like:
+\begin{verbatim}
+  decade wartype   logcost wardur factnum factnumsq    trnsfcap untype4 treaty
+1      5       1 14.917450     72       4        16    5.735545       0      0
+2      4       0 15.671810    168       6        36    9.730863       0      0
+3      5       1  6.907755     24       2         4   12.626030       0      0
+4      5       1 12.971540     24       2         4 -112.000000       0      1
+5      3       1  9.210340    216       2         4    4.275317       0      0
+    develop       exp
+1  132.8466 0.1217277
+2  132.0000 0.1163292
+3 1533.0000 0.0610000
+4 2216.6080 0.1294513
+5 1295.0000 0.1420000
+\end{verbatim}
+Similarly, the first five rows of `\texttt{peacecf.txt}' look like:
+\begin{verbatim}
+  decade wartype   logcost wardur factnum factnumsq    trnsfcap 1-untype4
+1      5       1 14.917450     72       4        16    5.735545         1
+2      4       0 15.671810    168       6        36    9.730863         1
+3      5       1  6.907755     24       2         4   12.626030         1
+4      5       1 12.971540     24       2         4 -112.000000         1
+5      3       1  9.210340    216       2         4    4.275317         1
+  treaty   develop       exp
+1      0  132.8466 0.1217277
+2      0  132.0000 0.1163292
+3      0 1533.0000 0.0610000
+4      1 2216.6080 0.1294513
+5      0 1295.0000 0.1420000
+\end{verbatim}
+
+The function \texttt{whatif} can be called in two alternative ways
+to analyze these counterfactuals.  First, typing:
+  \begin{verbatim}
+  > my.result <- whatif(data = "peacef.txt", cfact = "peacecf.txt") 
+  \end{verbatim}
+tells \texttt{whatif} to load the datasets `\texttt{peacef.txt}' and
+`\texttt{peacecf.txt}' from our working directory.
+Second, typing:
+  \begin{verbatim}
+  > my.result <- whatif(data = peacef, cfact = peacecf) 
+  \end{verbatim}
+tells \texttt{whatif} to use the \texttt{R} objects \texttt{peacef}
+and \texttt{peacecf} loaded into memory prior to the function call.
+These objects must be either non-character matrices or data frames
+containing the counterfactual and observed covariate data,
+respectively; in this case, they are data frames.  Alternatively, \texttt{peacef}
+may be either a \hlink{Zelig}{/zelig} or other \texttt{R} model output
+object (e.g., a model output object returned by a call to
+\texttt{glm}).
+
+The resulting output object \texttt{my.result} is a five-element list
+(six-element if the option ``return.distance=T'' is used), each element of
+which we now describe.  The first is simply the call.  The second is a
+logical vector named \texttt{in.hull}, which contains the results of
+the convex hull test.  Each element can have a value of either
+\texttt{FALSE}, indicating that the corresponding counterfactual is
+not in the convex hull of the observed data and thus requires
+extrapolation, or \texttt{TRUE}, indicating the opposite.  To see the
+values of \texttt{in.hull}, we type:
+  \begin{verbatim}
+  > my.result$in.hull 
+  \end{verbatim} %$
+For this example, the values are all \texttt{FALSE}.
+
+The third element of the output list, \texttt{geom.var}, is the geometric
+variability of the observed data, which we retrieve by typing:
+  \begin{verbatim}
+  > my.result$geom.var 
+  \end{verbatim} %$
+In this case, it is $0.110$ when rounding to three significant digits.
+King and Zeng offer the geometric variability as a rule of thumb
+threshold: counterfactuals with distances to the observed covariate
+data less than this value are to some extent nearby the data.  By
+default, pairwise Gower's distances ($G^{2}$) between each
+counterfactual and data point are calculated by \texttt{whatif} in order
+to determine which counterfactuals are nearby the data; alternatively, 
+\texttt{whatif} will calculate the pairwise (squared) Euclidian
+distance between each counterfactual and data point by setting the
+parameter \texttt{distance} equal to \texttt{"euclidian"} as follows:
+  \begin{verbatim}
+  > my.result <- whatif(data = peacef, cfact = peacecf, distance = "euclidian")
+  \end{verbatim}
+However, this option is only appropriate for quantitative data; since
+some of our variables are qualitative, we use the default Gower's
+distance measure.  
+
+Note that the matrix containing these distances can be large in size
+and is not returned by default. To return the distance matrix, set the
+parameter \texttt{return.distance} to \texttt{TRUE}.
+
+The fourth element of the output object, \texttt{sum.stat}, is a numeric
+vector, each element of which is the proportion of data points
+nearby the corresponding counterfactual.  The values can be seen by
+typing:
+  \begin{verbatim}
+  > my.result$sum.stat
+  \end{verbatim} %$
+The output looks like:
+  \begin{verbatim}
+            1           2           3           4           5           6 
+  0.008196721 0.008196721 0.008196721 0.008196721 0.008196721 0.008196721 
+            7           8           9          10          11          12
+  0.008196721 0.008196721 0.008196721 0.008196721 0.008196721 0.008196721 
+  ...
+          121         122
+  0.008196721 0.016393443
+  \end{verbatim}
+The numerical summary reported on page 14 of King and Zeng (2006) is
+the average of \texttt{sum.stat} over all counterfactuals, which we can obtain
+using the command
+  \begin{verbatim}
+  > mean(my.result$sum.stat)  
+  \end{verbatim} %$
+In this case, the average is $1.3$ percent.  This statistic is reported
+for your convenience by the function \texttt{summary}.
+
+We note that by default, `nearby' is defined as having a distance to
+the counterfactual less than or equal to the geometric variability of
+the observed data.  The default can be changed by setting a value for
+the parameter \texttt{nearby}.  For example, to instead set the nearby
+criterion at two geometric variances, we would type:
+  \begin{verbatim}
+  > my.result <- whatif(data = peacef, cfact = peacecf, nearby = 2)
+  \end{verbatim}
+
+The fifth element of the output object, \texttt{cum.freq}, stores information
+on the cumulative frequency distribution of the distances
+between a counterfactual and the observed covariate data.  To access
+the cumulative frequency distribution for the default set of Gower
+distances (from $0$ to $1$ in increments of $0.5$) between the first
+counterfactual and the data points, for example, we type:
+  \begin{verbatim}
+  > my.result$cum.freq[1, ]
+  \end{verbatim} %$
+This prints the distribution to the screen:
+  \begin{verbatim}
+            0        0.05         0.1        0.15         0.2        0.25         
+  0.000000000 0.000000000 0.008196721 0.081967213 0.262295082 0.483606557          
+          0.3        0.35         0.4        0.45         0.5        0.55
+  0.680327869 0.844262295 0.950819672 0.991803279 0.991803279 1.000000000
+          0.6        0.65         0.7        0.75         0.8        0.85         
+  1.000000000 1.000000000 1.000000000 1.000000000 1.000000000 1.000000000
+          0.9        0.95           1
+  1.000000000 1.000000000
+  \end{verbatim}
+Alternatively, we can change the default set of Gower distances by
+using the parameter \texttt{freq}.  For example, to calculate a
+cumulative frequency distribution solely for the Gower distances of $0$,
+$0.5$, and $1.0$, we type:
+  \begin{verbatim}
+  > my.result <- whatif(data = peacef, cfact = peacecf, freq = c(0, 0.5, 1.0))
+  \end{verbatim}
+Now the cumulative frequency distribution for the first counterfactual
+looks as follows:
+  \begin{verbatim}
+  > my.result$cum.freq[1, ]
+          0       0.5         1 
+  0.0000000 0.9918033 1.0000000 
+  \end{verbatim} %$
+
+We now turn to the auxiliary functions included in the \WhatIf\
+package.  The first is \texttt{plot}, which produces figures that
+graph the cumulative frequency distribution of the distances similar
+to Figure 3 in King and Zeng (2006).  This function takes as its
+input a \texttt{whatif} output object.  To plot the default cumulative
+frequency distributions for all counterfactuals to the screen, type:
+  \begin{verbatim}
+  > plot(my.result)
+  \end{verbatim}
+Plotting 122 distributions on the same graph will not be very helpful,
+however.  A particular frequency distribution or combination of
+frequency distributions can be plotted by setting the parameter
+\texttt{numcf} to equal the desired values.  For example, to plot
+only the cumulative frequency distribution for the first
+counterfactual, we type:
+  \begin{verbatim}
+  > plot(my.result, numcf = 1)
+  \end{verbatim}
+We also have the option of smoothing the raw cumulative
+frequencies, which can be plotted either on their own or in
+addition to the raw data.  The parameter controlling this option is
+\texttt{type}.  To plot both the raw and LOWESS smoothed cumulative
+frequency distributions for the first two counterfactuals, for
+example, we type:
+  \begin{verbatim}
+  > plot(my.result, numcf = c(1, 2), type = "b")
+  \end{verbatim}
+where \texttt{"b"} stands for `both'.  Alternatively, assigning the value
+\texttt{"l"} to \texttt{type} would plot only the smoothed frequencies.  To
+save the graph as an encapsulated postscript file for later use 
+instead of printing it to the screen, we set the parameter \texttt{eps}
+equal to \texttt{TRUE}:
+  \begin{verbatim}
+  > plot(my.result, numcf = c(1, 2), type = "b", eps = TRUE)
+  \end{verbatim}
+The graph is saved to our working directory.
+
+Not surprisingly, the function \texttt{summary} summarizes the most
+important information produced by the function \texttt{whatif}.  The
+output object, a list, contains this information, which may also be
+printed to the screen.  For example, typing:
+  \begin{verbatim}
+  > summary(my.result)
+  \end{verbatim}
+displays the total number of counterfactuals evaluated; the number of
+counterfactuals that are in the convex hull of the observed covariate
+data; the percentage of data points nearby each counterfactual
+averaged over all counterfactuals; and a table that contains both the
+results of the convex hull test and the percentage of data points
+nearby the counterfactual for each counterfactual.  Alternatively,
+typing:
+  \begin{verbatim}
+  > my.result.sum <- summary(my.result)
+  \end{verbatim}
+saves the summary information as the object \texttt{my.result.sum},
+which can be printed to the screen by typing either:
+  \begin{verbatim}
+  > print(my.result.sum)
+  \end{verbatim}
+or:
+  \begin{verbatim}
+  > my.result.sum
+  \end{verbatim}
+at the command prompt.
+
+Finally, the package \WhatIf\ includes two print functions.  To print
+the output object returned by \texttt{whatif} to the screen, type
+either:
+  \begin{verbatim}
+  > print(my.result)
+  \end{verbatim}
+or the name of the output object at the command prompt.  Not printed
+by these calls are the matrices of distances and cumulative
+frequencies.  These large objects can be printed by setting the
+parameters \texttt{print.dist} (if the distance matrix was returned)
+and \texttt{print.freq} equal to \texttt{TRUE}, respectively.  For
+example, to print the entire output object except for the matrix of
+Gower distances to the screen, we type:
+  \begin{verbatim}
+  > print(my.result, print.freq = TRUE)
+  \end{verbatim}
+The other print function controls the printing of the output object
+from the function \texttt{summary}.
+
+\subsection{Identifying Common Support in Causal Inference}
+
+The same algorithm for identifying whether or not counterfactuals
+fall within the convex hull of the observed covariate data can be used
+to assess common support.  We illustrate here with two examples.
+
+\subsubsection{U.N. Peacekeeping}
+
+In Section 2.4 of \citet{KinZen07}, the seven fully observed countries
+that experienced a U.N.\ peacekeeping mission comprise the treatment
+group while the remaining 115 fully observed (and 117 non-fully
+observed) countries that lacked a U.N.\ peacekeeping mission
+constitute the control group.  Cases of the former type receive a
+coding of `1' on the key causal variable, \texttt{untype4}, while
+cases of the latter type are coded `0'.
+
+When estimating the \emph{average treatment effect on the treated}, we
+discard controls with observed covariate data not within the convex
+hull of the data for the treated as follows:
+  \begin{verbatim}
+  > my.result.cntrl <- whatif(formula = ~ decade + wartype + logcost +  
+  + wardur + factnum + factnumsq + trnsfcap + treaty + develop + exp, 
+  + data = peacef[peacef$untype4 == 1,], cfact = peacef[peacef$untype4 == 0,])
+  \end{verbatim}
+This command feeds the seven treated countries to the parameter
+\texttt{data} and the 117 control countries to the parameter
+\texttt{cfact}.  This differs from the last section, where
+\texttt{data} contained all 124 observed data points, whether treated
+or not.  The parameter \texttt{formula} allows us to drop \texttt{untype4}
+from the two data frames, which we do by naming all of the variables
+that we want to keep.  (We eliminate this variable since our goal is
+to identify the convex hull of the observed pre-treatment covariates.)
+Note that we do not specify a dependent variable in the formula.  We
+then look at the results:
+  \begin{verbatim}
+  > my.result.cntrl$in.hull
+  \end{verbatim} %$
+The control group countries not on the support of the treated
+countries are those with \texttt{FALSE} entries---in this case, all
+115.  Note that for this data and call, two messages designed to
+inform the user about choices made by \texttt{whatif} in the face of
+problematic data are printed to the screen.  The first informs us that
+\texttt{whatif} has deleted the two control group cases with missing
+values from the \texttt{cfact} data set since counterfactuals must be
+fully observed.  The second, ``range of at least one variable equals
+zero'', informs us that \texttt{data} contains a degenerate case: the
+variable \texttt{treaty} has no variance (and hence a range of zero)
+in the observed covariate data set of the treated countries.  In order
+to calculate the Gower distances, \texttt{whatif} must make
+assumptions about the handling of such variables.  Specifically, it
+ignores their contribution unless the values of the data point and
+counterfactual are identical, in which case the normalized difference
+is set to zero.
+
+A different, but perhaps more reliably estimable quantity, may often
+be obtained by \emph{also} dropping observations in the treatment
+group whose observed covariate data falls outside of the convex hull
+of the control group.  Any countries remaining comprise the data set
+that lies on the common support.  Both the prior and this second step
+can be performed simultaneously using \WhatIf\ as originally described
+in Section \ref{sec:cfeval} for evaluating counterfactuals.
+Accordingly, we type:
+  \begin{verbatim}
+  > peacef2cf <- peacef
+  > peacef2cf$untype4 <- 1 - peacef2cf$untype4
+  > my.result.comb <- whatif(data = peacef, cfact = peacef2cf)
+  \end{verbatim}
+Here, we initially create the counterfactual data set
+\texttt{peacef2cf} directly from the factual, replacing
+\texttt{untype4} with 1 - \texttt{untype4}.  We could also have
+supplied the data set \texttt{peacecf}, originally constructed in a
+similar manner.  (The data sets would be identical if the two
+counterfactuals with missing data were list-wise deleted from
+\texttt{peacef2cf}.)  We now look at the results of the convex hull
+test as before and see that none of the counterfactuals are in the
+convex hull.  Hence, there is no data on the common support of both
+the treatment and control groups.
+
+\subsubsection{Hypothetical Data}
+
+To demonstrate that the latter approach really does combine the
+individual assessments of support on the treatment and control groups,
+consider this hypothetical data set:
+  \begin{verbatim}
+  > sqdata <- data.frame(t = c(1, 1, 1, 1, 0, 0, 0, 0), 
+  +                      x = c(0, 0, 1, 1, .5, .5, 1.5, 1.5), 
+  +                      y = c(1, 0, 0, 1, .5, 1.5, .5, 1.5))
+  \end{verbatim}
+The variable `t' is the treatment.  The convex hull of the observed
+covariate data of the treatment group is obviously a unit square with
+its lower left vertex at the origin.  The convex hull of the control
+group is also a unit square, but one with its lower left vertex at the
+point $(0.5, 0.5)$ in the Cartesian plane.
+
+We first identify the control group units that are not on the support
+of the treated units (i.e., the control group units not in the convex
+hull of the covariate data of the treated group) as follows:
+  \begin{verbatim}
+  > summary(whatif(~ x + y, data = sqdata[sqdata$t == 1,], cfact = 
+  + sqdata[sqdata$t == 0,]))
+  \end{verbatim}
+which as before uses the parameter \texttt{formula} to eliminate the
+treatment variable, \texttt{t}, from the data frames.  Only the first unit
+from the control group, the point $(0.5, 0.5)$ in the Cartesian plane,
+is in the convex hull and hence on the support of the treated group.
+We next identify the treated group units that are not on the support
+of the control units by typing:
+  \begin{verbatim}
+  > summary(whatif(~ x + y, data = sqdata[sqdata$t == 0,], cfact = 
+  + sqdata[sqdata$t == 1,]))
+  \end{verbatim}
+The treatment group unit represented by the point $(1, 1)$ is the only
+one in the convex hull and hence on the support of the control group.
+Accordingly, if we were to eliminate the units without common support
+as identified by the two separate tests, we would eliminate all units
+save the points $(0.5, 0.5)$, the only control group unit on the support
+of the treated group, and $(1, 1)$, the only treated group unit on the
+support of the control group.
+
+Alternatively, we can combine the two steps:
+  \begin{verbatim}
+  > summary(whatif(data = sqdata, cfact = cbind(1 - sqdata[, 1], sqdata[, 2:3])))
+  \end{verbatim}
+This time, two counterfactuals are in the convex hull of the data.
+These counterfactuals correspond to the units with observed covariate
+data $(0.5, 0.5)$ and $(1, 1)$.  Accordingly, we conclude that only two
+units are on the common support, the same conclusion that we drew from
+the two separate tests.
+
+\subsection{Using WhatIf with Zelig}
+
+We now illustrate how \WhatIf\ can be easily used with \texttt{Zelig}.
+As an example, we first generate \texttt{Zelig} output from a simple
+logistic model using the hypothetical data set created in the prior
+example:
+  \begin{verbatim}
+  > z.out <- zelig(t ~ x + y, data = sqdata, model = "logit")
+  \end{verbatim}
+We next create a counterfactual using the \texttt{Zelig} command
+\texttt{setx}:
+  \begin{verbatim}
+  > x.out <- setx(z.out, x = 2, y = 3)
+  \end{verbatim}
+This is normally followed by a call to the \texttt{Zelig} command
+\texttt{sim} to compute quantities of interest, such as predicted
+values given these values of the explanatory variables.  See, for
+example,
+\hlink{http://gking.harvard.edu/zelig/docs/Quick\_Overview.html}
+{/zelig/docs/Quick_Overview.html}.  \WhatIf\ enables you to evaluate
+the values to which you set the explanatory variables before
+simulating quantities of interest.  We do this by calling
+\texttt{whatif} as follows:
+  \begin{verbatim}
+  > summary(whatif(data = z.out, cfact = x.out))
+  \end{verbatim}
+The results indicate that this counterfactual is not in the convex
+hull of the data.  In this situation, you may want to rethink whether
+or not you should proceed on to the \texttt{sim} stage of analysis.
+Note that if an intercept was fit as part of the original model,
+\texttt{whatif} automatically drops it from both the observed
+covariate data set extracted from the \texttt{zelig} output object
+\texttt{z.out} and the \texttt{setx}-generated counterfactual \texttt{x.out}.
+
+\subsection{Using WhatIf with Other \texttt{R} Model Output Objects}
+
+Suppose that instead of using \texttt{Zelig}, we use the function
+\texttt{lm} to fit a linear model to the same hypothetical data
+by typing:
+\begin{verbatim}
+  > lm.out <- lm(t ~ x + y, data = sqdata)
+\end{verbatim}
+In this case, we could then use \WhatIf\ to evaluate a counterfactual
+as follows:
+\begin{verbatim}
+  > summary(whatif(data = lm.out, cfact = data.frame(x = 2, y = 3)))
+\end{verbatim}
+As with \texttt{zelig} output objects, intercepts are dropped from the
+observed covariate data sets extracted in this manner.  Unlike with
+\texttt{Zelig}, however, counterfactuals are not generated
+automatically by \texttt{lm}; hence, the counterfactuals that you
+supply to \texttt{whatif} should not include an intercept.  The
+parameter \texttt{formula} can be used to drop, select, and transform
+the variables in \texttt{data} and \texttt{cfact} when \texttt{data}
+is a \texttt{R} model or \texttt{zelig} output object in the same way
+that it can be used when \texttt{data} is a matrix or data frame.  For
+example, to drop the variable \texttt{x}, we type:
+\begin{verbatim}
+  > summary(whatif(~ y, data = lm.out, cfact = data.frame(x = 2, y = 3)))
+\end{verbatim}
+or more simply and equivalently:
+\begin{verbatim}
+  > summary(whatif(~ y, data = lm.out, cfact = data.frame(y = 3)))
+\end{verbatim}
+If instead we decide to run the test using the square of \texttt{x}, we type:
+\begin{verbatim}
+  > summary(whatif(~ I(x^2) + y, data = lm.out, cfact = data.frame(x = 2, y = 3)))
+\end{verbatim}
+following standard \texttt{R} conventions for formulas.
+
+\subsection{Demos and Data Sets}
+
+\texttt{R} will automatically walk you through the examples related to
+U.N.\ peacekeeping by running
+  \begin{verbatim}
+  > demo("peace")
+  \end{verbatim}
+The factual and counterfactual U.N.\ peacekeeping data sets used in
+the examples are included in the \WhatIf\ package.  You may load them
+by calling:
+  \begin{verbatim}
+  > data("peacef")
+  \end{verbatim}
+and
+  \begin{verbatim}
+  > data("peacecf")
+  \end{verbatim}
+which stores them as \texttt{R} objects with the corresponding names.
+
+\section{Technical Details}
+
+The computational task of determining the convex hull membership is
+made feasible even for large numbers of explanatory variables and
+observations by the solution proposed in \citet{KinZen06}, which
+eliminates the most time-consuming part of the problem: the
+characterization of the convex hull itself.  In addition, they show
+that the remaining (implicit) point location problem can be expressed
+as a linear programming exercise, making it possible to take advantage
+of existing well-developed algorithms designed for other purposes to
+speed up the computation.  Specifically, a counterfactual $x$ is in
+the convex hull of the explanatory variables $X$ if there exists a
+feasible solution to the following standard form linear programming
+problem:
+\begin{align}
+\label{lp}
+\text{min }  & C'\eta           \nonumber\\
+\text{s.t. } & A'\eta=B'                \\
+            & \eta \geq 0      \nonumber
+\end{align}
+%\begin{equation}
+%\mbox{min } C' \eta
+%\end{equation}
+%\begin{equation}
+%\mbox{s. t. } A' \eta = B' \mbox{ and } \eta \geq 0
+%\end{equation}
+where $C$ is a vector of zeros (so that there is no objective function
+to minimize); $\eta$ is a vector of coefficients; $A'$ is $X'$ with an
+additional, final row of $1$'s; and $B'$ is $x'$ with an additional,
+final element equal to $1$.
+
+The default Gower distance (which is suitable for both quantitative
+and qualitative data) between a pair of $K$ dimensional points $x_i$
+and $x_j$ is defined simply as the average absolute distance between
+the elements of the two points divided by the range of the data:
+\begin{equation}
+  \label{gower}
+  G_{ij} = \frac{1}{K}\sum_{k=1}^K \frac{\left| x_{ik} - 
+x_{jk}\right|}{r_k}
+\end{equation}
+where the range is $r_k = \text{max}(X_{.k}) - \text{min}(X_{.k})$ and
+the min and max functions return the smallest and largest elements
+respectively in the set including the $k$th element of the explanatory
+variables $X$.  The optional squared Euclidian distance (which is
+suitable only for quantitative data) between points $x_{i}$ and
+$x_{j}$ is given by the familiar definition, i.e. the sum of the
+squared differences between the elements of the two points:
+\begin{equation}
+  E_{ij} = \sum_{k=1}^K (x_{ik} - x_{jk})^2 \mbox{ .}
+\end{equation}
+
+\section{\texttt{R} Function Reference}
+
+\subsection{Function \texttt{whatif()}}
+
+This function evaluates your counterfactuals.  Specifically, it:
+\begin{enumerate}
+\item Determines if your counterfactuals are in the convex hull of the
+  observed covariate data and are therefore interpolations or if they instead
+  lie outside of it and are therefore extrapolations.
+\item Computes the distance from your counterfactuals to
+  each of the $n$ observed data points.  The default distance function used is
+  Gower's non-parametric measure.  \label{item:dist}
+\item Computes a summary statistic for each counterfactual based on
+  the distances in \ref{item:dist}: the fraction of observed covariate data points with
+  distances to your counterfactual less than a value you supply.
+  By default, this value is taken to be the geometric variability of the
+  observed data.
+\item Computes the cumulative frequency distribution of each
+  counterfactual for the distances in \ref{item:dist} using values that you
+  supply.  By default, Gower distances from $0$ to $1$ in increments of
+  $0.05$ are used.
+\end{enumerate}
+In other words, this function provides you with both qualitative and
+quantitative information about your counterfactuals, including two
+numeric summaries.  You can then feed the output of this function
+either to \texttt{plot} to generate a graphical view or to
+\texttt{summary} to get a numerical summary of the results.
+
+\subsubsection{Usage}
+
+\begin{verbatim}
+     whatif(formula = NULL, data, cfact, range = NULL, freq = NULL, 
+     nearby = 1, distance = "gower", miss = "list", choice = "both",
+     return.inputs = FALSE, return.distance = FALSE, ...)
+\end{verbatim}
+
+\subsubsection{Inputs}
+
+\begin{description}
+\item[formula] An optional formula without a dependent variable that
+  is of class ``formula'' and that follows standard \texttt{R}
+  conventions for formulas, e.g. \verb1~1 x1 + x2.  Allows you to
+  transform or otherwise re-specify combinations of the variables in
+  both \texttt{data} and \texttt{cfact}.  To use this parameter, both
+  \texttt{data} and \texttt{cfact} must be coercable to data frames;
+  the variables of both \texttt{data} and \texttt{cfact} must be
+  labeled; and all variables appearing in \texttt{formula} must also
+  appear in both \texttt{data} and \texttt{cfact}.  Otherwise, errors
+  are returned.  The intercept is automatically dropped.  Default is
+  \texttt{NULL}.
+\item[data] May take one of the following forms:
+  \begin{enumerate}
+  \item A \texttt{R} model output object, such as the output from calls to
+    \texttt{lm}, \texttt{glm}, and \texttt{zelig}.  Such an output
+    object must be a list.  It must additionally have either a \texttt{formula}
+    or \texttt{terms} component and either a \texttt{data} or \texttt{model} component; if it
+    does not, an error is returned.  Of the latter, \texttt{whatif}
+    first looks for \texttt{data}, which should contain either the original
+    data set supplied as part of the model call (as in \texttt{glm})
+    or the name of this data set (as in \texttt{zelig}), which is
+    assumed to reside in the global environment.  If \texttt{data} does not
+    exist, \texttt{whatif} then looks for \texttt{model}, which should
+    contain the model frame (as in \texttt{lm}).  The intercept is
+    automatically dropped from the extracted \emph{observed covariate
+    data} set if the original model included one.
+  \item A $n \times k$ non-character (logical or numeric) matrix or data
+    frame of \emph{observed covariate data} with $n$ data points or
+    units and $k$ covariates.  All desired variable transformations
+    and interaction terms should be included in this set of $k$
+    covariates unless \texttt{formula} is alternatively used to
+    produce them.  However, an intercept should not be.  Such a matrix
+    may be obtained by passing model output (e.g., output from a call
+    to \texttt{lm}) to \texttt{model.matrix} and excluding the 
+    intercept from the resulting matrix if one was fit.  Note
+    that \texttt{whatif} will attempt to coerce data frames to their
+    internal numeric values.  Hence, data frames should only contain
+    logical, numeric, and factor columns; character columns will lead
+    to an error being returned.
+  \item A string.  Either the complete path (including file name) of
+    the file containing the data or the path relative to your working
+    directory.  This file should be a white space delimited text file.
+    If it contains a header, you must include a column of row names as
+    discussed in the help file for the \texttt{R} function
+    \texttt{read.table}.  The data in the file should be as otherwise
+    described in (2).
+  \end{enumerate}
+  Missing data is allowed and will be dealt with via the argument
+  \texttt{missing}.  It should be flagged using \texttt{R}'s
+  standard representation for missing data, \texttt{NA}.
+\item[cfact] A \texttt{R} object or a string.  If a \texttt{R} object,
+  a $m \times k$ non-character matrix or data frame of
+  \emph{counterfactuals} with $m$ counterfactuals and the same $k$
+  covariates (in the same order) as in \texttt{data}.  However, if
+  \texttt{formula} is used to select a subset of the $k$ covariates,
+  then \texttt{cfact} may contain either only these $j \leq k$
+  covariates or the complete set of $k$ covariates.  An intercept
+  should not be included as one of the covariates.  It will be
+  automatically dropped from the counterfactuals generated by
+  \texttt{Zelig} if the original model contained one.  Data frames
+  will again be coerced to their internal numeric values if possible.
+  If a string, either the complete path (including file name) of the
+  file containing the counterfactuals or the path relative to your
+  working directory.  This file should be a white space delimited text
+  file.  See the discussion under \texttt{data} for instructions on
+  dealing with a header.  All counterfactuals should be fully
+  observed: if you supply counterfactuals with missing data, they will
+  be list-wise deleted and a warning message will be printed to the
+  screen.
+\item[range] An optional numeric vector of length $k$, where $k$ is
+  the number of covariates.  Each element represents the range of the
+  corresponding covariate for use in calculating Gower distances.  Use
+  this argument when covariate data do not represent the population of
+  interest, such as selection by stratification or experimental
+  manipulation.  By default, the range of each covariate is calculated
+  from the data (the difference of its maximum and minimum values in
+  the sample), which is appropriate when a simple random sampling
+  design was used.  To supply your own range for the $k$th covariate,
+  set the $k$th element of the vector equal to the desired range and
+  all other elements equal to \texttt{NA}.  Default is \texttt{NULL}.
+\item[freq] An optional numeric vector of any positive length, the
+  elements of which comprise a set of distances.  Used in calculating
+  cumulative frequency distributions for the distances of the data
+  points from each counterfactual.  For each such distance and
+  counterfactual, the cumulative frequency is the fraction of observed
+  covariate data points with distance to the counterfactual less than
+  or equal to the supplied distance value.  The default varies with
+  the distance measure used.  When the Gower distance measure is
+  employed, frequencies are calculated for the sequence of Gower
+  distances from $0$ to $1$ in increments of $0.05$.  When the Euclidian
+  distance measure is employed, frequencies are calculated for the
+  sequence of Euclidian distances from the minimum to the maximum
+  observed distances in twenty equal increments, all rounded to two
+  decimal places. Default is \texttt{NULL}.
+\item[nearby] An optional scalar indicating which observed data
+  points are considered to be nearby (i.e., within `nearby' geometric
+  variances of) the counterfactuals.  Used to calculate the summary
+  statistic returned by the function: the fraction of the observed
+  data nearby each counterfactual.  By default, the geometric
+  variability of the covariate data is used.  For example, setting
+  \texttt{nearby} to $2$ will identify the proportion of data points
+  within two geometric variances of a counterfactual.  Default is \texttt{1}.
+\item[distance] An optional string indicating the distance measure to
+  employ.  The choices are either \texttt{"gower"}, Gower's
+  non-parametric distance measure ($G^{2}$), which is suitable for
+  both qualitative and quantitative data; or \texttt{"euclidian"},
+  (squared) Euclidian distance, which is only suitable for quantitative
+  data.  The default is the former, \texttt{"gower"}.
+\item[miss] An optional string indicating the strategy for dealing
+  with missing data in the observed covariate data set.
+  \texttt{whatif} supports two possible missing data strategies:
+  \texttt{"list"}, list-wise deletion of missing cases; and
+  \texttt{"case"}, ignoring missing data case-by-case (pairwise
+  deletion).  Note that if \texttt{"case"} is selected, observations
+  with missing values are still deleted listwise for the convex hull
+  test and for computing Euclidian distances, but pairwise deletion is
+  used in computing the Gower distances to maximally use available
+  information. The user is strongly encouraged to treat missing data
+  using specialized tools such as Amelia prior to feeding the data to
+  \texttt{whatif}.  Default is \texttt{"list"}.
+\item[choice] An optional string indicating which analyses to 
+  undertake. The options are either \texttt{"hull"}, only perform the convex hull 
+  membership test; \texttt{"distance"}, do not perform the convex
+  hull test but do everything else, such as calculating the distance between
+  each counterfactual and data point; or \texttt{"both"}, undertake both the
+  convex hull test and the distance calculations (i.e., do everything).
+  Default is \texttt{"both"}.
+\item[return.inputs] A Boolean; should the processed observed
+  covariate and counterfactual data matrices on which all
+  \texttt{whatif} computations are performed be returned?  Processing
+  refers to internal \texttt{whatif} operations such as the subsetting
+  of covariates via \texttt{formula}, the deletion of cases with
+  missing values, and the coercion of data frames to numeric matrices.
+  Primarily intended for diagnostic purposes.  If \texttt{TRUE}, these matrices
+  are returned as a list.  Default is \texttt{FALSE}.
+\item[return.distance] A Boolean; should the matrix of distances
+  between each counterfactual and data point be returned?  If
+  \texttt{TRUE}, this matrix is returned as part of the output; if
+  \texttt{FALSE}, it is not.  Default is \texttt{FALSE} due to the large
+  size that this matrix may attain.
+\end{description}
+
+\subsubsection{Value}
+
+An object of class ``whatif'', a list containing the following six or
+seven elements:
+\begin{description}
+\item[call]  The original call to \texttt{whatif}.
+\item[inputs] A list with two elements, \texttt{data} and \texttt{cfact}.  Only
+  present if \texttt{return.inputs} was set equal to \texttt{TRUE} in the call
+  to \texttt{whatif}.  The first element is the processed observed
+  covariate data matrix on which all \texttt{whatif} computations were
+  performed.  The second element is the processed counterfactual data
+  matrix.
+\item[in.hull] A logical vector of length $m$, where $m$ is
+  the number of counterfactuals.  Each element of the vector is \texttt{TRUE}
+  if the corresponding counterfactual is in the convex hull and \texttt{FALSE}
+  otherwise.
+\item[dist] An $m \times n$ numeric matrix, where $m$ is the number of
+  counterfactuals and $n$ is the number of data points (units).  Only
+  present if \texttt{return.distance} was set equal to \texttt{TRUE}
+  in the call to \texttt{whatif}.  The $[i,j]$th entry of the matrix
+  contains the distance between the $i$th counterfactual and the $j$th
+  data point.
+\item[geom.var]  A scalar.  The geometric variability of the observed
+  covariate data.
+\item[sum.stat] A numeric vector of length $m$, where $m$ is the
+  number of counterfactuals.  The $m$th element contains the summary
+  statistic for the corresponding counterfactual.  This summary
+  statistic is the fraction of data points with distances to the
+  counterfactual less than \texttt{nearby*gv}, which by
+  default is the geometric variability of the covariates.
+\item[cum.freq] A numeric matrix.  By default, the matrix has
+  dimension $m \times 21$, where $m$ is the number of counterfactuals;
+  however, if you supplied your own frequencies via the argument
+  \texttt{freq}, the matrix has dimension $m \times f$, where $f$ is the
+  length of \texttt{freq}.  Each row of the matrix contains the
+  cumulative frequency distribution for the corresponding
+  counterfactual calculated using either the distance measure-specific
+  default set of distance values or the set that you supplied (see the
+  discussion under the argument \texttt{freq}).  Hence, the $[i,j]$th
+  entry of the matrix is the fraction of data points with 
+  distances to the $i$th counterfactual less than or equal to the
+  value represented by the $j$th column.  The column names contain these
+  values.
+\end{description}
+
+\subsection{Function \texttt{plot.whatif()}}
+
+This function generates a cumulative frequency plot of distances,
+graphically summarizing the distance of your counterfactuals from the
+data.  It takes as its input an object returned by the function
+\texttt{whatif}, which has class ``whatif''.  It is called by the
+generic function \texttt{plot}.  The cumulative frequencies appear on
+the vertical axis.  They are the fraction of rows in the observed data
+set with either Gower or (squared) Euclidian distances to the
+counterfactuals less than or equal to the given value on the
+horizontal axis.  Counterfactuals in the convex hull are plotted with
+a solid line and counterfactuals outside of the convex hull with a
+dashed line.
+
+\subsubsection{Usage}
+
+\begin{verbatim}
+     plot(x, type = "f", numcf = NULL, eps = FALSE, ...)
+\end{verbatim}
+
+\subsubsection{Inputs}
+
+\begin{description}
+\item[x] An object of class ``whatif'', the output of the function
+  \texttt{whatif()}.
+\item[type] A character string; the type of plot of the cumulative
+  frequencies of the distances to be produced, including:
+  \texttt{"f"} for cumulative frequencies only; \texttt{"l"} for
+  LOWESS smoothing of cumulative frequencies only; \texttt{"b"} for
+  both cumulative frequencies and LOWESS smoothing.  LOWESS
+  scatterplot smoothing is plotted in blue and the unsmoothed
+  frequencies in black.  Default is \texttt{"f"}.
+\item[numcf] A numeric vector; the specific counterfactuals to be
+  plotted.  Each element represents a counterfactual, specifically its
+  row number from the matrix or data frame of counterfactuals.  By default, all
+  counterfactuals are plotted.  Default is \texttt{NULL}.
+\item[eps] A Boolean; should an encapsulated postscript file be
+  generated?  Setting the argument equal to \texttt{TRUE} generates an
+  \texttt{.eps} file, which is saved to your working directory with
+  file name of form `\texttt{graph\_`type'\_`numcf'.eps}', where \texttt{`type'}
+  and \texttt{`numcf'} are the values of the respective arguments.  Specifically, 
+  \texttt{`numcf'} takes the value of the first element of the argument \texttt{numcf}  
+  unless all counterfactuals were plotted, in which case \texttt{all} appears in the place of 
+  \texttt{`numcf'}.  Default is \texttt{FALSE}, which instead 
+  prints the graph to the screen.
+\end{description}
+
+\subsubsection{Value}
+
+Either a graph printed to the screen or an encapsulated postscript
+file saved to your working directory.  In the latter case, the file
+name has form `\texttt{graph\_`type'\_`numcf'.eps}', where \texttt{`type'} and
+\texttt{`numcf'} are the values of the respective arguments.
+
+\subsection{Function \texttt{print.whatif()}}
+
+This function prints the information generated by a call to
+\texttt{whatif} to the screen.  It takes as its input an object
+returned by the function \texttt{whatif}, which has class ``whatif''.
+It is called by the generic function \texttt{print}.
+
+\subsubsection{Usage}
+
+\begin{verbatim}
+     print(x, print.dist = FALSE, print.freq = FALSE, ...)
+\end{verbatim}
+
+\subsubsection{Inputs}
+
+\begin{description}
+  \item[x] An object of class ``whatif'', the output of the
+    function \texttt{whatif}.
+  \item[print.dist] A Boolean; should the matrix of pairwise 
+    distances between each counterfactual and data point be printed to
+    the screen, if it was returned?  Default is \texttt{FALSE}.
+  \item[print.freq] A Boolean; should the matrix of cumulative
+    frequencies of distances for each counterfactual be printed
+    to the screen?  Default is \texttt{FALSE}.
+\end{description}
+
+\subsubsection{Value}
+
+A printout to the screen of the information contained in the 
+\texttt{whatif} output object.
+
+\subsection{Function \texttt{print.summary.whatif()}}
+
+This function prints the information generated from the
+\texttt{whatif} output object by a call to \texttt{summary} to the
+screen.  It takes as its input an object returned by the function
+\texttt{summary.whatif}, which has class ``summary.whatif''.  It is
+called by the generic function \texttt{print}.
+
+\subsubsection{Usage}
+
+\begin{verbatim}
+     print(x, ...)
+\end{verbatim}
+
+\subsubsection{Inputs}
+
+\begin{description}
+  \item[x]  An object of class ``summary.whatif'', the output of
+    the function \texttt{summary.whatif}.
+\end{description}
+
+\subsubsection{Value}
+
+A printout to the screen of the \texttt{whatif} information summarized
+in the \texttt{summary.whatif} output object.
+
+\subsection{Function \texttt{summary.whatif()}}
+
+This function summarizes the information produced by \texttt{whatif}
+about your counterfactuals.  It takes as its input the object returned
+by the function \texttt{whatif}, which has class ``whatif''.  It is
+called by the generic function \texttt{summary}.  The summary generated
+is returned as well as printed to the screen.
+
+\subsubsection{Usage}
+
+\begin{verbatim}
+     summary(object, ...)
+\end{verbatim}
+
+\subsubsection{Inputs}
+
+\begin{description}
+  \item[object]  An object of class ``whatif'', the output of 
+    the function \texttt{whatif}.
+\end{description}
+
+\subsubsection{Value}
+
+An object of class ``summary.whatif'', a list containing the following five
+elements:
+\begin{description}
+\item[call]  The original call to \texttt{whatif}.
+\item[m] A scalar.  The total number of counterfactuals evaluated.
+\item[m.inhull] A scalar.  The number of counterfactuals evaluated
+  that are in the convex hull of the observed covariate data.
+\item[mean.near] A scalar.  The average percentage of data `nearby'
+  each counterfactual, where the average is taken over all
+  counterfactuals.
+\item[sum.df] A data frame with three columns and $m$ rows, where $m$ is
+  the number of counterfactuals.  The first column, \texttt{cfact}, indexes
+  the counterfactuals.  The second column, \texttt{in.hull}, contains the
+  results of the convex hull test.  The third column, \texttt{per.near},
+  contains the percentage of data points nearby each counterfactual.
+\end{description}
+This object is printed to the screen.
+
+\bibliographystyle{apsr}
+\bibsep=0in
+\bibliography{gk.bib,gkpubs.bib}
+\end{document}
+
