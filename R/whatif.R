@@ -31,8 +31,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, nearb
       if (is.data.frame(data$data))  {
         data <- model.matrix(tt, model.frame(tt, data = data$data, na.action = NULL))
       }  else  {
-        data <- model.matrix(tt, model.frame(tt, data = eval(data$data, envir = .GlobalEnv),
-                                             na.action = NULL))
+        data <- model.matrix(tt, model.frame(tt, data = eval(data$data, envir = .GlobalEnv), na.action = NULL))
       }
     }  else  {
       data <- model.matrix(tt, data = data$model)
@@ -344,7 +343,7 @@ if (return.inputs)  {
   }
 
   if (choice=="hull") {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result,)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result)
   }
     
 }  else  {
@@ -365,7 +364,7 @@ if (return.inputs)  {
   }
 
   if (choice=="hull")  {
-      out <- list(call = match.call(), in.hull = test.result,)
+      out <- list(call = match.call(), in.hull = test.result)
   }
 
 }
