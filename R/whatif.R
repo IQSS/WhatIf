@@ -31,7 +31,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, nearb
       if (is.data.frame(data$data))  {
         data <- model.matrix(tt, model.frame(tt, data = data$data, na.action = NULL))
       }  else  {
-        data <- model.matrix(tt, model.frame(tt, data = eval(data$data, env = .GlobalEnv), 
+        data <- model.matrix(tt, model.frame(tt, data = eval(data$data, envir = .GlobalEnv),
                                              na.action = NULL))
       }
     }  else  {
