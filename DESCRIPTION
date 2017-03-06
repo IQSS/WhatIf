@@ -1,12 +1,15 @@
 Package: WhatIf
-Version: 1.5-7
-Date: 2014-01-09
+Version: 1.5-8
+Date: 2017-03-06
 Title: WhatIf: Software for Evaluating Counterfactuals
 Author: Heather Stoll <hstoll@polsci.ucsb.edu>,
           Gary King <king@harvard.edu>,
 	  Langche Zeng <zeng@ucsd.edu>,
 Maintainer: Heather Stoll <hstoll@polsci.ucsb.edu>
-Depends: R (>= 2.3.1), lpSolve
+Depends: R (>= 2.3.1)
+Imports: 
+    lpSolve,
+    Zelig (>= 5.0-17)
 Description: Inferences about counterfactuals are essential for prediction,
       answering what if questions, and estimating causal effects.
       However, when the counterfactuals posed are too far from the data at
@@ -27,5 +30,6 @@ Description: Inferences about counterfactuals are essential for prediction,
       King and Langche Zeng, 2007, "When Can History Be Our Guide?  The 
       Pitfalls of Counterfactual Inference," International Studies 
       Quarterly 51 (March).
-License: GPL (>= 2)
+License: GPL (>=3)
 URL: http://gking.harvard.edu/whatif
+BugReports: https://github.com/IQSS/WhatIf/issues
