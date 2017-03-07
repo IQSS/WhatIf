@@ -77,7 +77,6 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
       }
       formula <- update.formula(formula, ~ . -1)
       ttvar <- all.vars(formula)
-browser()
       for (i in 1:length(ttvar))  {
         if (!(ttvar[i] %in% dimnames(data)[[2]])){
           stop("variable(s) in 'formula' either unlabeled or not present in 'data'")
