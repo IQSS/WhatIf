@@ -6,16 +6,14 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   print("Preprocessing data ...")
-
-    if (grepl('Zelig*', class(data)) & missing(cfact)) {
+  
+    if (grepl('Zelig*', class(data)) & missing(cfact))
         cfact <- zelig_setx_to_df(data)
-        if (nrow(cfact) == 0) 
-            stop('No counterfactuals found. Use either the cfact argument or the setx function from Zelig.')
-        
+    if (grepl('Zelig*', class(data)) & !missing(cfact)) {
         formula <- formula(delete.response(terms(data$formula)))
         data <- data$zelig.out$z.out[[1]]$model
     }
-    
+  
   if(!((is.character(cfact) && is.vector(cfact) && length(cfact) == 1) || 
        is.data.frame(cfact) || (is.matrix(cfact) && !is.character(cfact)))) {
     stop("'cfact' must be either a string, a R data frame, or a R non-character matrix")
@@ -79,6 +77,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
       }
       formula <- update.formula(formula, ~ . -1)
       ttvar <- all.vars(formula)
+browser()
       for (i in 1:length(ttvar))  {
         if (!(ttvar[i] %in% dimnames(data)[[2]])){
           stop("variable(s) in 'formula' either unlabeled or not present in 'data'")
