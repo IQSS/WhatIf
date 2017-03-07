@@ -6,12 +6,13 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   print("Preprocessing data ...")
+
     if (grepl('Zelig*', class(data)) & missing(cfact)) {
         cfact <- zelig_setx_to_df(data)
         if (nrow(cfact) == 0) 
             stop('No counterfactuals found. Use either the cfact argument or the setx function from Zelig.')
         
-  #      formula <- data$formula
+        formula <- formula(delete.response(terms(data$formula)))
         data <- data$zelig.out$z.out[[1]]$model
     }
     
