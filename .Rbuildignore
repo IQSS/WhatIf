@@ -1,1 +1,3 @@
 Readme.markdown
+^.*\.Rproj$
+^\.Rproj\.user$

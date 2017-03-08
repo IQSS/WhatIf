@@ -25,9 +25,10 @@ return.distance = FALSE, ...)
   \item{data}{May take one of the following forms:  
     \enumerate{
     \item A \code{R} model output object, such as the output from calls to
-      \code{lm}, \code{glm}, and \code{zelig}.  Such an output
-      object must be a list.  It must additionally have either a \code{formula}
-      or \code{terms} component and either a \code{data} or \code{model} component; if it
+      \code{lm}, \code{glm}, and \code{zelig}. If it is not a \code{zelig} object,
+      such an output object must be a list.  It must additionally have either a 
+      \code{formula} or \code{terms} component and either a \code{data} or 
+      \code{model} component; if it
       does not, an error is returned.  Of the latter, \code{whatif}
       first looks for \code{data}, which should contain either the original
       data set supplied as part of the model call (as in \code{glm})

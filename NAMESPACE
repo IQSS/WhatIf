@@ -1,5 +1,12 @@
 importFrom(lpSolve, lp)
 importFrom(utils, packageDescription)
+importFrom("grDevices", "dev.off", "postscript")
+importFrom("graphics", "lines", "plot")
+importFrom("stats", "complete.cases", "delete.response", "lowess", 
+           "model.frame", "model.matrix", "na.fail", "na.omit", "terms",
+           "update.formula")
+importFrom("utils", "read.table")
+importFrom("Zelig", "zelig_setx_to_df")
 export(whatif)
 S3method(plot, whatif)
 S3method(summary, whatif)

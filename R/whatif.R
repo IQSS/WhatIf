@@ -1,8 +1,19 @@
-whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, nearby = 1,  distance = "gower", miss = "list", choice= "both", return.inputs = FALSE, return.distance = FALSE, ...)  {
+whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, 
+                   nearby = 1,  distance = "gower", miss = "list", 
+                   choice= "both", return.inputs = FALSE, 
+                   return.distance = FALSE, ...)  {
 
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   print("Preprocessing data ...")
+  
+    if (grepl('Zelig*', class(data)) & missing(cfact))
+        cfact <- zelig_setx_to_df(data)
+    if (grepl('Zelig*', class(data)) & !missing(cfact)) {
+        formula <- formula(delete.response(terms(data$formula)))
+        data <- data$zelig.out$z.out[[1]]$model
+    }
+  
   if(!((is.character(cfact) && is.vector(cfact) && length(cfact) == 1) || 
        is.data.frame(cfact) || (is.matrix(cfact) && !is.character(cfact)))) {
     stop("'cfact' must be either a string, a R data frame, or a R non-character matrix")
@@ -185,7 +196,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, nearb
     C <- c(rep(0, n))
     D <- c(rep("=", k + 1))
     
-    hull=rep(0,m)
+    hull = rep(0,m)
     
     for (i in 1:m)  {
       B <- c(z[i,],1)
@@ -265,7 +276,6 @@ if (identical(miss, "list"))  {
 }
 
     #CONVEX HULL TEST
-
 if ((choice=="both")|(choice=="hull"))  {
   print("Performing convex hull test ...")
   test.result <- convex.hull.test(x = na.omit(data), z = cfact)
