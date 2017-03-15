@@ -1,7 +1,7 @@
 Package: WhatIf
+Title: WhatIf: Software for Evaluating Counterfactuals
 Version: 1.5-8
 Date: 2017-03-07
-Title: WhatIf: Software for Evaluating Counterfactuals
 Authors@R: c(
     person("Christopher", "Gandrud", email = "zelig.zee@gmail.com", 
     role = c("aut", "cre")),
