@@ -2,10 +2,13 @@ Package: WhatIf
 Version: 1.5-8
 Date: 2017-03-07
 Title: WhatIf: Software for Evaluating Counterfactuals
-Author: Heather Stoll <hstoll@polsci.ucsb.edu>,
-        Gary King <king@harvard.edu>,
-        Langche Zeng <zeng@ucsd.edu>,
-Maintainer: Heather Stoll <hstoll@polsci.ucsb.edu>
+Authors@R: c(
+    person("Christopher", "Gandrud", email = "zelig.zee@gmail.com", 
+    role = c("aut", "cre")),
+    person("Gary", "King", role = "aut"),
+    person("Heather", "Stoll", role = "aut"),
+    person("Langche", "Zeng", role = "aut")
+    )
 Depends: R (>= 2.3.1)
 Imports:
     lpSolve,
