@@ -1,0 +1,25 @@
+# Created by IQSSdevtools (0.0.0.9000). Do not edit by hand. 
+
+ Documentation:
+  readme: no
+  news: yes
+  bugreports: yes
+  vignettes: yes
+  pkgdown_website: no
+License:
+  gpl3_license: yes
+Version_Control:
+  git: yes
+  github: yes
+Testing:
+  uses_testthat: yes
+  uses_travis: no
+  uses_appveyor: no
+  build_cran:
+    completed: no
+  test_coverage: 69
+Background:
+  package_name: WhatIf
+  package_version: 1.5-8
+  package_commit_sha: a500c803f0eb34176b5c6315b0a410c460ab1629
+  check_time: 2017-03-16 15:24:26
