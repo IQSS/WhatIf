@@ -38,3 +38,4 @@ Imports:
     Zelig (>= 5.0-17)
 Suggests: 
     testthat
+RoxygenNote: 6.0.1
