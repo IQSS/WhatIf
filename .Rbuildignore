@@ -2,3 +2,4 @@ Readme.markdown
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.iqss_reportcard\.yml$
+docs/*
