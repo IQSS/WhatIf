@@ -1,20 +1,20 @@
-whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL, 
-                   nearby = 1,  distance = "gower", miss = "list", 
-                   choice= "both", return.inputs = FALSE, 
+whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
+                   nearby = 1,  distance = "gower", miss = "list",
+                   choice= "both", return.inputs = FALSE,
                    return.distance = FALSE, ...)  {
 
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
-  print("Preprocessing data ...")
-  
+  message("Preprocessing data ...")
+
     if (grepl('Zelig*', class(data)) & missing(cfact))
         cfact <- zelig_setx_to_df(data)
     if (grepl('Zelig*', class(data)) & !missing(cfact)) {
         formula <- formula(delete.response(terms(data$formula)))
         data <- data$zelig.out$z.out[[1]]$model
     }
-  
-  if(!((is.character(cfact) && is.vector(cfact) && length(cfact) == 1) || 
+
+  if(!((is.character(cfact) && is.vector(cfact) && length(cfact) == 1) ||
        is.data.frame(cfact) || (is.matrix(cfact) && !is.character(cfact)))) {
     stop("'cfact' must be either a string, a R data frame, or a R non-character matrix")
   }
@@ -32,7 +32,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   }
     #Initial processing of data
   if (is.list(data) && !(is.data.frame(data)))  {
-    if (!((("formula" %in% names(data)) || ("terms" %in% names(data))) && 
+    if (!((("formula" %in% names(data)) || ("terms" %in% names(data))) &&
           (("data" %in% names(data)) || ("model" %in% names(data)))))  {
       stop("the list supplied to 'data' is not a valid output object")
     }
@@ -52,7 +52,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     }
     rm(tt)
   } else {
-    if(!((is.character(data) && is.vector(data) && length(data) == 1) || 
+    if(!((is.character(data) && is.vector(data) && length(data) == 1) ||
          is.data.frame(data) || (is.matrix(data) && !is.character(data)))) {
       stop("'data' must be either a string, a R data frame, a R non-character matrix, or an output object")
     }
@@ -86,9 +86,9 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
         }
       }
       rm(ttvar)
-      data <- model.matrix(formula, data = model.frame(formula, as.data.frame(data), 
+      data <- model.matrix(formula, data = model.frame(formula, as.data.frame(data),
                                       na.action = NULL))
-      cfact <- model.matrix(formula, data = model.frame(formula, as.data.frame(cfact), 
+      cfact <- model.matrix(formula, data = model.frame(formula, as.data.frame(cfact),
                                        na.action = NULL))
     } else {
       stop("'formula' must be of class 'formula'")
@@ -96,7 +96,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   }
   if (!(identical(complete.cases(cfact), rep(TRUE, dim(cfact)[1])))) {
     cfact <- na.omit(cfact)
-    print("Note:  counterfactuals with missing values eliminated from cfact")
+    message("Note:  counterfactuals with missing values eliminated from cfact")
   }
     #Tertiary processing of data and cfact:  convert to numeric matrices
   if (is.data.frame(data))  {
@@ -147,7 +147,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   }
     #Check if nearby argument is numeric, a scalar, and >= 0, if supplied
   if (!(is.null(nearby))) {
-    if (!(is.numeric(nearby) && is.vector(nearby) && length(nearby) == 1 && 
+    if (!(is.numeric(nearby) && is.vector(nearby) && length(nearby) == 1 &&
           nearby >= 0))  {
       stop("'nearby' must be numeric, greater than or equal to 0, and a scalar")
     }
@@ -177,44 +177,51 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     stop("'return.distance' must be logical, i.e. either TRUE or FALSE")
   }
 
-    #KEY LOCAL VARIABLES
+  #KEY LOCAL VARIABLES
   n = nrow(data)  #Number of data points in observed data set (initially including missing)
 
-    #LOCAL FUNCTIONS
+  #LOCAL FUNCTIONS
   convex.hull.test <- function(x, z)  {
 
   #Create objects required by lp function, adding a row of 1s to
   #transposed matrix s and a 1 to counterfactual vector z[m,].  Note that "A" here
   #corresponds to "A'" in King and Zeng 2006, Appendix A, and "B" and
   #"C" to their "B" and "C", respectively.
-
     n <- nrow(x)
     k <- ncol(x)
     m <- nrow(z)
-    
+    pb <- txtProgressBar(min = 1, max = m, style = 3)
+
     A <- rbind(t(x), rep(1, n))
     C <- c(rep(0, n))
     D <- c(rep("=", k + 1))
-    
+
     hull = rep(0,m)
-    
+
     for (i in 1:m)  {
-      B <- c(z[i,],1)
-      lp.result <- lp(objective.in=C, const.mat=A, const.dir=D, const.rhs=B)
-      if (lp.result$status==0)
-        hull[i]<-1      
+      B <- c(z[i,], 1)
+
+   #     D2 <- c(rep("==", k + 1))
+   #   lp_result_test <- Rglpk::Rglpk_solve_LP(obj = C, mat = A, dir = D2, rhs = B)
+
+      lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
+                      const.rhs = B)
+      if (lp.result$status == 0)
+        hull[i] <- 1
+      setTxtProgressBar(pb, i)
     }
     hull <- as.logical(hull)
+    close(pb)
     return(hull)
   }
 
   calc.gd <- function(dat, cf, range) {
       #If range =  0 for a variable k, set the normalized difference
       #equal to 0 if, for a given observed data point p, its
-      #kth element minus the kth element of the counterfactual is 0. 
+      #kth element minus the kth element of the counterfactual is 0.
       #Otherwise set equal to NA, thus ignoring the contribution of the kth
       #variable to the calculation of Gower's distance.
-      #Note that an element of the range vector should only be 0 in degenerate 
+      #Note that an element of the range vector should only be 0 in degenerate
       #cases.
     n<-nrow(dat)
     m<-nrow(cf)
@@ -238,7 +245,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     dist=matrix(0,m,n,dimnames=list(1:m,1:n))
     for (i in 1:m) {
       temp<-(dat-cf[i,])^2
-      dist[i,]<-(colSums(temp)) 
+      dist[i,]<-(colSums(temp))
     }
       return(t(dist))
     }
@@ -259,7 +266,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     gv.x <- (0.5 * sum.gd.x)/(n^2)
     return (gv.x)
   }
- 
+
   calc.cumfreq <- function(freq, dist)  {
     m<-length(freq)
     n<-ncol(dist)
@@ -277,22 +284,22 @@ if (identical(miss, "list"))  {
 
     #CONVEX HULL TEST
 if ((choice=="both")|(choice=="hull"))  {
-  print("Performing convex hull test ...")
+  message("Performing convex hull test ...")
   test.result <- convex.hull.test(x = na.omit(data), z = cfact)
 }
-  
+
     #CALCULATE DISTANCE
 
 if ((choice=="both")|(choice=="distance"))  {
-  print("Calculating distances ....")
+  message("Calculating distances ....")
   if (identical(distance, "gower"))  {
     samp.range <- apply(data, 2, max, na.rm = TRUE) - apply(data, 2, min, na.rm = TRUE)
-    if(!is.null(range)) {            
+    if(!is.null(range)) {
       w<-which(!is.na(range))
       samp.range[w]<-range[w]
     }
     if (identical(TRUE, any(samp.range == 0)))  {
-      print("Note:  range of at least one variable equals zero")
+      message("Note:  range of at least one variable equals zero")
     }
     dist <- calc.gd(dat = data, cf = cfact, range=samp.range)
   }  else {
@@ -300,22 +307,22 @@ if ((choice=="both")|(choice=="distance"))  {
   }
 
      #GEOMETRIC VARIANCE
-  print("Calculating the geometric variance...")
+  message("Calculating the geometric variance...")
   if (identical(distance, "gower"))  {
     gv.x <- geom.var(dat = data,rang = samp.range)
   }  else {
     gv.x<-.5*mean(calc.ed(dat = na.omit(data), cf = na.omit(data)))
   }
-	
+
     #SUMMARY STATISTIC
   if (identical(miss, "case") && identical(distance, "euclidian"))  {
     summary <- colSums(dist <= nearby*gv.x) * (1/nrow(na.omit(data)))
   }  else  {
     summary <- colSums(dist <= nearby*gv.x) * (1/n)
   }
-  
+
     #CUMULATIVE FREQUENCIES
-  print("Calculating cumulative frequencies ...")
+  message("Calculating cumulative frequencies ...")
    if (is.null(freq))  {
      if (identical(distance, "gower"))  {
        freqdist <- seq(0, 1, by = 0.05)
@@ -327,14 +334,14 @@ if ((choice=="both")|(choice=="distance"))  {
   } else {
     freqdist <- freq
   }
-  cumfreq <- calc.cumfreq(freq = freqdist, dist = dist)    
+  cumfreq <- calc.cumfreq(freq = freqdist, dist = dist)
   dimnames(cumfreq) <- list(seq(1, nrow(cfact), by = 1), freqdist)
 }
 
-print("Finishing up ...")
+message("Finishing up ...")
 
   #RETURN
-  
+
 if (return.inputs)  {
   if (choice=="both")  {
     if (return.distance)  {
@@ -355,7 +362,7 @@ if (return.inputs)  {
   if (choice=="hull") {
       out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result)
   }
-    
+
 }  else  {
   if (choice=="both")  {
     if (return.distance)  {
@@ -364,7 +371,7 @@ if (return.inputs)  {
       out <- list(call = match.call(), in.hull = test.result, geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
     }
   }
-    
+
   if (choice=="distance")  {
     if (return.distance)  {
       out <- list(call = match.call(), dist = t(dist), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
