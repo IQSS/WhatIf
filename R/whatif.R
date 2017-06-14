@@ -197,13 +197,9 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     D <- c(rep("=", k + 1))
 
     hull = rep(0,m)
-
+    
     for (i in 1:m)  {
       B <- c(z[i,], 1)
-
-   #     D2 <- c(rep("==", k + 1))
-   #   lp_result_test <- Rglpk::Rglpk_solve_LP(obj = C, mat = A, dir = D2, rhs = B)
-
       lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
                       const.rhs = B)
       if (lp.result$status == 0)
