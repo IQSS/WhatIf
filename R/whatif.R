@@ -197,16 +197,26 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     D <- c(rep("=", k + 1))
 
     hull = rep(0,m)
-    
-    for (i in 1:m)  {
-      B <- c(z[i,], 1)
-      lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
-                      const.rhs = B)
-      if (lp.result$status == 0)
-        hull[i] <- 1
-      setTxtProgressBar(pb, i)
+
+    in_ch <- function(i) {
+        B <- c(z[i,], 1)
+        lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
+                        const.rhs = B)
+        setTxtProgressBar(pb, i)
+        if (lp.result$status == 0) return(TRUE)
+        else return(FALSE)
     }
-    hull <- as.logical(hull)
+    hull <- sapply(1:m, in_ch)
+    
+#    for (i in 1:m)  {
+#      B <- c(z[i,], 1)
+#      lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
+#                      const.rhs = B)
+#      if (lp.result$status == 0)
+#        hull[i] <- 1
+#      setTxtProgressBar(pb, i)
+#    }
+#    hull <- as.logical(hull)
     close(pb)
     return(hull)
   }
