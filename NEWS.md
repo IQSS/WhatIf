@@ -6,6 +6,11 @@ applicable.
 WhatIf version 1.5-9
 ===============================
 
+# Major changes
+
+-   :rocket: convex hull test now run in parallel. The number of cores can be 
+specified in the `whatif` call with the `mc.cores` argument.
+
 # Minor changes
 
 -   Progress bar added to `whatif` convex hull test to indication progress.

@@ -2,9 +2,9 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
                    nearby = 1,  distance = "gower", miss = "list",
                    choice= "both", return.inputs = FALSE,
                    return.distance = FALSE, mc.cores = detectCores(), ...)  {
-    if (!all(c(is.integer(mc.cores), mc.cores > 0)))
+    if (mc.cores <= 0)
         stop("mc.cores must be an integer greater than 0.", call. = FALSE)
-    
+
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   message("Preprocessing data ...")
@@ -182,8 +182,10 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   #KEY LOCAL VARIABLES
   n = nrow(data)  #Number of data points in observed data set (initially including missing)
 
-  #LOCAL FUNCTIONS
+  #LOCAL FUNCTIONS -------------------------------------------------------------
   convex.hull.test <- function(x, z, mc.cores = mc.cores)  {
+
+    one_core <- mc.cores == 1
 
   #Create objects required by lp function, adding a row of 1s to
   #transposed matrix s and a 1 to counterfactual vector z[m,].  Note that "A" here
@@ -193,19 +195,34 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     k <- ncol(x)
     m <- nrow(z)
 
+    if(one_core) pb <- txtProgressBar(min = 1, max = m, style = 3)
+
     A <- rbind(t(x), rep(1, n))
     C <- c(rep(0, n))
     D <- c(rep("=", k + 1))
 
-    in_ch <- function(i) {
+    in_ch <- function(i, one_core = FALSE) {
         B <- c(z[i,], 1)
         lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
                         const.rhs = B)
+        if (one_core)
+            setTxtProgressBar(pb, i)
         if (lp.result$status == 0) return(TRUE)
         else return(FALSE)
     }
-    hull <- pbmclapply(1:m, in_ch) # parallelised with progress bar
-    return(unlist(hull))
+    if (one_core) {
+        hull <- sapply(1:m, in_ch, one_core = one_core)
+    }
+    else {
+        if (.Platform$OS.type == "windows")
+            hull <- mclapply(1:m, in_ch, mc.cores = mc.cores)
+        else
+            hull <- pbmclapply(1:m, in_ch, mc.cores = mc.cores) # parallelised with progress bar
+        hull <- unlist(hull)
+    }
+
+    if (one_core) close(pb)
+    return(hull)
   }
 
   calc.gd <- function(dat, cf, range) {
@@ -216,10 +233,10 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
       #variable to the calculation of Gower's distance.
       #Note that an element of the range vector should only be 0 in degenerate
       #cases.
-    n<-nrow(dat)
-    m<-nrow(cf)
-    dat=t(dat)
-    dist=matrix(0,m,n,dimnames=list(1:m,1:n))
+    n <- nrow(dat)
+    m <- nrow(cf)
+    dat = t(dat)
+    dist = matrix(0,m,n,dimnames=list(1:m,1:n))
     for (i in 1:m) {
       temp<-abs(dat-cf[i,])/range
       if (any(range==0)) {
@@ -278,7 +295,7 @@ if (identical(miss, "list"))  {
     #CONVEX HULL TEST
 if ((choice=="both")|(choice=="hull"))  {
   message("Performing convex hull test ...")
-  test.result <- convex.hull.test(x = na.omit(data), z = cfact, 
+  test.result <- convex.hull.test(x = na.omit(data), z = cfact,
                                   mc.cores = mc.cores)
 }
 
@@ -339,49 +356,49 @@ message("Finishing up ...")
 if (return.inputs)  {
   if (choice=="both")  {
     if (return.distance)  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
-                  in.hull = test.result, dist = t(dist), geom.var = gv.x, 
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact),
+                  in.hull = test.result, dist = t(dist), geom.var = gv.x,
                   sum.stat = summary, cum.freq = cumfreq)
     }  else  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
-                  in.hull = test.result, geom.var = gv.x, sum.stat = summary, 
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact),
+                  in.hull = test.result, geom.var = gv.x, sum.stat = summary,
                   cum.freq = cumfreq)
     }
   }
 
   if (choice=="distance")  {
     if (return.distance)  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
-                  dist = t(dist), geom.var = gv.x, sum.stat = summary, 
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact),
+                  dist = t(dist), geom.var = gv.x, sum.stat = summary,
                   cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact),
                   geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
     }
   }
 
   if (choice=="hull") {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact),
                   in.hull = test.result)
   }
 
 }  else  {
   if (choice=="both")  {
     if (return.distance)  {
-      out <- list(call = match.call(), in.hull = test.result, dist = t(dist), 
+      out <- list(call = match.call(), in.hull = test.result, dist = t(dist),
                   geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), in.hull = test.result, geom.var = gv.x, 
+      out <- list(call = match.call(), in.hull = test.result, geom.var = gv.x,
                   sum.stat = summary, cum.freq = cumfreq)
     }
   }
 
   if (choice=="distance")  {
     if (return.distance)  {
-      out <- list(call = match.call(), dist = t(dist), geom.var = gv.x, 
+      out <- list(call = match.call(), dist = t(dist), geom.var = gv.x,
                   sum.stat = summary, cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), geom.var = gv.x, sum.stat = summary, 
+      out <- list(call = match.call(), geom.var = gv.x, sum.stat = summary,
                   cum.freq = cumfreq)
     }
   }
