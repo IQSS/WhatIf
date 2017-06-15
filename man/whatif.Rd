@@ -8,7 +8,7 @@
 \usage{
 whatif(formula = NULL, data, cfact, range = NULL, freq = NULL, nearby = 1, 
 distance = "gower", miss = "list", choice = "both", return.inputs = FALSE, 
-return.distance = FALSE, ...)
+return.distance = FALSE, mc.cores = detectCores(), ...)
 }
 \arguments{
   \item{formula}{An optional formula without a dependent variable that

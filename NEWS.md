@@ -4,6 +4,7 @@ External contributors are referenced with their GitHub usernames when
 applicable.
 
 WhatIf version 1.5-9
+===============================
 
 # Minor changes
 

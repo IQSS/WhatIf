@@ -2,6 +2,7 @@ importFrom(lpSolve, lp)
 importFrom(utils, packageDescription)
 importFrom("grDevices", "dev.off", "postscript")
 importFrom("graphics", "lines", "plot")
+importFrom("parallel", "detectCores")
 importFrom("pbmcapply", "pbmclapply")
 importFrom("stats", "complete.cases", "delete.response", "lowess", 
            "model.frame", "model.matrix", "na.fail", "na.omit", "terms",
