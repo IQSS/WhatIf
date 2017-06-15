@@ -226,7 +226,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
         temp[is.nan(temp)]<-0
         temp[temp==Inf]<-NA
       }
-      dist[i,]<-colMeans(temp,na.rm=T)
+      dist[i,] <- colMeans(temp,na.rm=T)
     }
     return(t(dist))
    }
@@ -339,38 +339,50 @@ message("Finishing up ...")
 if (return.inputs)  {
   if (choice=="both")  {
     if (return.distance)  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result, dist = t(dist), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+                  in.hull = test.result, dist = t(dist), geom.var = gv.x, 
+                  sum.stat = summary, cum.freq = cumfreq)
     }  else  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result, geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+                  in.hull = test.result, geom.var = gv.x, sum.stat = summary, 
+                  cum.freq = cumfreq)
     }
   }
 
   if (choice=="distance")  {
     if (return.distance)  {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), dist = t(dist), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+                  dist = t(dist), geom.var = gv.x, sum.stat = summary, 
+                  cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+                  geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
     }
   }
 
   if (choice=="hull") {
-      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), in.hull = test.result)
+      out <- list(call = match.call(), inputs = list(data = data, cfact = cfact), 
+                  in.hull = test.result)
   }
 
 }  else  {
   if (choice=="both")  {
     if (return.distance)  {
-      out <- list(call = match.call(), in.hull = test.result, dist = t(dist), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), in.hull = test.result, dist = t(dist), 
+                  geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), in.hull = test.result, geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), in.hull = test.result, geom.var = gv.x, 
+                  sum.stat = summary, cum.freq = cumfreq)
     }
   }
 
   if (choice=="distance")  {
     if (return.distance)  {
-      out <- list(call = match.call(), dist = t(dist), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), dist = t(dist), geom.var = gv.x, 
+                  sum.stat = summary, cum.freq = cumfreq)
     }  else {
-      out <- list(call = match.call(), geom.var = gv.x, sum.stat = summary, cum.freq = cumfreq)
+      out <- list(call = match.call(), geom.var = gv.x, sum.stat = summary, 
+                  cum.freq = cumfreq)
     }
   }
 
