@@ -35,6 +35,7 @@ BugReports: https://github.com/IQSS/WhatIf/issues
 Depends: R (>= 2.3.1)
 Imports:
     lpSolve,
+    pbmcapply,
     Zelig (>= 5.0-17)
 Suggests: 
     testthat

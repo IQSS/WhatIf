@@ -148,6 +148,10 @@ return.distance = FALSE, ...)
   \code{TRUE}, this matrix is returned as part of the output; if
   \code{FALSE}, it is not.  Default is \code{FALSE} due to the large
   size that this matrix may attain.}
+  \item{mc.cores}{The number of cores to use for the convex hull test, i.e. at 
+  most how many child processes will be run simultaneously. Must be at least 
+  one, and parallelization requires at least two cores. The default is set by
+  \code{\link{detectCores}}}.
   \item{...}{Further arguments passed to and from other methods.}
 }
 \details{

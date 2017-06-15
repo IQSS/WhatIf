@@ -1,8 +1,10 @@
 whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
                    nearby = 1,  distance = "gower", miss = "list",
                    choice= "both", return.inputs = FALSE,
-                   return.distance = FALSE, ...)  {
-
+                   return.distance = FALSE, mc.cores = detectCores(), ...)  {
+    if (!all(c(is.integer(mc.cores), mc.cores > 0)))
+        stop("mc.cores must be an integer greater than 0.", call. = FALSE)
+    
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   message("Preprocessing data ...")
@@ -181,7 +183,7 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   n = nrow(data)  #Number of data points in observed data set (initially including missing)
 
   #LOCAL FUNCTIONS
-  convex.hull.test <- function(x, z)  {
+  convex.hull.test <- function(x, z, mc.cores = mc.cores)  {
 
   #Create objects required by lp function, adding a row of 1s to
   #transposed matrix s and a 1 to counterfactual vector z[m,].  Note that "A" here
@@ -190,35 +192,20 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     n <- nrow(x)
     k <- ncol(x)
     m <- nrow(z)
-    pb <- txtProgressBar(min = 1, max = m, style = 3)
 
     A <- rbind(t(x), rep(1, n))
     C <- c(rep(0, n))
     D <- c(rep("=", k + 1))
 
-    hull = rep(0,m)
-
     in_ch <- function(i) {
         B <- c(z[i,], 1)
         lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
                         const.rhs = B)
-        setTxtProgressBar(pb, i)
         if (lp.result$status == 0) return(TRUE)
         else return(FALSE)
     }
-    hull <- sapply(1:m, in_ch)
-    
-#    for (i in 1:m)  {
-#      B <- c(z[i,], 1)
-#      lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
-#                      const.rhs = B)
-#      if (lp.result$status == 0)
-#        hull[i] <- 1
-#      setTxtProgressBar(pb, i)
-#    }
-#    hull <- as.logical(hull)
-    close(pb)
-    return(hull)
+    hull <- pbmclapply(1:m, in_ch) # parallelised with progress bar
+    return(unlist(hull))
   }
 
   calc.gd <- function(dat, cf, range) {
@@ -291,7 +278,8 @@ if (identical(miss, "list"))  {
     #CONVEX HULL TEST
 if ((choice=="both")|(choice=="hull"))  {
   message("Performing convex hull test ...")
-  test.result <- convex.hull.test(x = na.omit(data), z = cfact)
+  test.result <- convex.hull.test(x = na.omit(data), z = cfact, 
+                                  mc.cores = mc.cores)
 }
 
     #CALCULATE DISTANCE
