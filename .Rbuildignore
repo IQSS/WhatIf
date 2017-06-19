@@ -3,3 +3,4 @@ Readme.markdown
 ^\.Rproj\.user$
 ^\.iqss_reportcard\.yml$
 docs/*
+^\.travis\.yml$

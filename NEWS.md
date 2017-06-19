@@ -13,7 +13,9 @@ specified in the `whatif` call with the `mc.cores` argument.
 
 # Minor changes
 
--   Progress bar added to `whatif` convex hull test to indication progress.
+-   Progress bar added to `whatif` convex hull test to indicate progress.
+
+-   Travis CI added for continuous integration testing.
 
 WhatIf version 1.5-8
 ===============================
