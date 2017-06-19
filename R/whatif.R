@@ -182,47 +182,48 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
   #KEY LOCAL VARIABLES
   n = nrow(data)  #Number of data points in observed data set (initially including missing)
 
-  #LOCAL FUNCTIONS -------------------------------------------------------------
-  convex.hull.test <- function(x, z, mc.cores = mc.cores)  {
+    #LOCAL FUNCTIONS -------------------------------------------------------------
+    convex.hull.test <- function(x, z, mc.cores = mc.cores)  {
 
-    one_core <- mc.cores == 1
+        one_core_pb <- mc.cores == 1 
 
-  #Create objects required by lp function, adding a row of 1s to
-  #transposed matrix s and a 1 to counterfactual vector z[m,].  Note that "A" here
-  #corresponds to "A'" in King and Zeng 2006, Appendix A, and "B" and
-  #"C" to their "B" and "C", respectively.
-    n <- nrow(x)
-    k <- ncol(x)
-    m <- nrow(z)
+        #Create objects required by lp function, adding a row of 1s to
+        #transposed matrix s and a 1 to counterfactual vector z[m,].  Note that "A" here
+        #corresponds to "A'" in King and Zeng 2006, Appendix A, and "B" and
+        #"C" to their "B" and "C", respectively.
+        n <- nrow(x)
+        k <- ncol(x)
+        m <- nrow(z)
 
-    if(one_core) pb <- txtProgressBar(min = 1, max = m, style = 3)
+        if (one_core_pb && m == 1) one_core_pb <- FALSE
+        if (one_core_pb) pb <- txtProgressBar(min = 1, max = m, style = 3)
 
-    A <- rbind(t(x), rep(1, n))
-    C <- c(rep(0, n))
-    D <- c(rep("=", k + 1))
+        A <- rbind(t(x), rep(1, n))
+        C <- c(rep(0, n))
+        D <- c(rep("=", k + 1))
 
-    in_ch <- function(i, one_core = FALSE) {
-        B <- c(z[i,], 1)
-        lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
-                        const.rhs = B)
-        if (one_core)
-            setTxtProgressBar(pb, i)
-        if (lp.result$status == 0) return(TRUE)
-        else return(FALSE)
-    }
-    if (one_core) {
-        hull <- sapply(1:m, in_ch, one_core = one_core)
-    }
-    else {
-        if (.Platform$OS.type == "windows")
-            hull <- mclapply(1:m, in_ch, mc.cores = mc.cores)
-        else
-            hull <- pbmclapply(1:m, in_ch, mc.cores = mc.cores) # parallelised with progress bar
-        hull <- unlist(hull)
-    }
+        in_ch <- function(i, one_core_pb = FALSE) {
+            B <- c(z[i,], 1)
+            lp.result <- lp(objective.in = C, const.mat = A, const.dir = D,
+                            const.rhs = B)
+            if (one_core_pb)
+                setTxtProgressBar(pb, i)
+            if (lp.result$status == 0) return(TRUE)
+            else return(FALSE)
+        }
+        if (one_core_pb) {
+            hull <- sapply(1:m, in_ch, one_core_pb = one_core_pb)
+        }
+        else {
+            if (.Platform$OS.type == "windows")
+                hull <- mclapply(1:m, in_ch, mc.cores = mc.cores)
+            else
+                hull <- pbmclapply(1:m, in_ch, mc.cores = mc.cores) # parallelised with progress bar
+            hull <- unlist(hull)
+        }
 
-    if (one_core) close(pb)
-    return(hull)
+        if (one_core_pb) close(pb)
+        return(hull)
   }
 
   calc.gd <- function(dat, cf, range) {
