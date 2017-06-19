@@ -1,3 +1,7 @@
+#' @importFrom grDevices dev.off postscript
+#' @importFrom graphics lines plot
+#' @importFrom stats lowess
+#' @export
 plot.whatif <- function(x, type = "f", numcf = NULL, eps = FALSE, ...)  {
 
     #USER ERROR INPUT CHECKS

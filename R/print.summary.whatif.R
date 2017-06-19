@@ -1,3 +1,4 @@
+#' @export
 print.summary.whatif <- function(x, ...)  {
 
     x$sum.df$in.hull <- as.character(x$sum.df$in.hull)

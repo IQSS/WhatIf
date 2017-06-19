@@ -1,3 +1,10 @@
+#' @importFrom parallel detectCores mclapply 
+#' @importFrom pbmcapply pbmclapply
+#' @importFrom Zelig zelig_setx_to_df
+#' @importFrom utils read.table setTxtProgressBar txtProgressBar
+#' @importFrom lpSolve lp
+#' @importFrom stats complete.cases delete.response model.frame model.matrix na.fail na.omit terms update.formula
+#' @export
 whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
                    nearby = 1,  distance = "gower", miss = "list",
                    choice= "both", return.inputs = FALSE,

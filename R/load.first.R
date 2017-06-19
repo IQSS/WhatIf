@@ -1,3 +1,4 @@
+#' @importFrom utils packageDescription
 .onAttach <- function(...) {
 
     mylib <- dirname(system.file(package = "WhatIf"))

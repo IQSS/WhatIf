@@ -1,3 +1,4 @@
+#' @export
 summary.whatif <- function (object, ...)  {
 
  #Calculate number of counterfactuals
