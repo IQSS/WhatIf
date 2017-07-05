@@ -1,3 +1,25 @@
+#' Plot Whatif 
+#'
+#' Generates a cumulative frequency plot of distances from an
+#' object of class "whatif".  The cumulative frequencies (the fraction
+#' of rows in the observed data set with either Gower or (squared)
+#' Euclidian distances to the counterfactuals  less than the given value on the horizontal axis) 
+#' appear on the vertical axis. 
+#'
+#' @examples 
+#'  Create example data sets and counterfactuals
+#' 
+#'  my.cfact <- matrix(rnorm(3*5), ncol = 5)
+#'  my.data <- matrix(rnorm(100*5), ncol = 5)
+#'
+#'  Evaluate counterfactuals
+#'  my.result <- whatif(data = my.data, cfact = my.cfact, mc.cores = 1)
+#'
+#'  Plot cumulative frequencies for the first two counterfactuals (rows
+#'  1 and 2) in my.cfact
+#' 
+#'  plot(my.result, type = "b", numcf = c(1, 2), mc.cores = 1)
+#'
 #' @importFrom grDevices dev.off postscript
 #' @importFrom graphics lines plot
 #' @importFrom stats lowess

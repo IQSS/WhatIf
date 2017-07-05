@@ -1,3 +1,18 @@
+#' Print Whatif
+#'
+#' Prints the information produced by the function \code{whatif},
+#' an object of class "whatif", to the screen.  
+#'
+#' @examples
+#'  my.cfact <- matrix(rnorm(3*5), ncol = 5)
+#'  my.data <- matrix(rnorm(100*5), ncol = 5)
+#'
+#'  Evaluate counterfactuals
+#'  my.result <- whatif(data = my.data, cfact = my.cfact, mc.cores = 1)
+#'
+#'  Print output object
+#'  print(my.result)
+#' 
 #' @export
 print.whatif <- function(x, print.dist = FALSE, print.freq = FALSE, ...)  {
 
