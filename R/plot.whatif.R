@@ -5,6 +5,37 @@
 #' of rows in the observed data set with either Gower or (squared)
 #' Euclidian distances to the counterfactuals  less than the given value on the horizontal axis) 
 #' appear on the vertical axis. 
+#' 
+#' @param type A character string; the type of plot of the cumulative frequencies 
+#' of the distances to be produced.  Possible types are:  \code{"f"} 
+#' for cumulative frequencies only; \code{"l"} for LOWESS smoothing of
+#' cumulative frequencies only; and \code{"b"} for both cumulative
+#' frequencies and LOWESS smoothing.  The default is \code{"f"}.
+#' @param numcf A numeric vector; the specific counterfactuals to be plotted.
+#' Each element represents a counterfactual, specifically its row number
+#' from the matrix or data frame of counterfactuals.  By default, all
+#' counterfactuals are plotted.  Default is \code{NULL}.
+#' @param eps A Boolean; should an encapsulated postscript file be
+#' generated?  Setting the argument equal to \code{TRUE} generates an
+#' \code{.eps} file, which is saved to your working directory with
+#' file name of form '\code{graph_'type'_'numcf'.eps}', where
+#' \code{'type'} and \code{'numcf'} are the values of the respective
+#' arguments.  Specifically, \code{'numcf'} takes the value of 
+#' the first element of the argument \code{numcf} unless all counterfactuals
+#' were plotted, in which case \code{all} appears in the place of
+#' \code{'numcf'}. Default is \code{FALSE},
+#' which instead prints the graph to the screen.
+#' 
+#' @details 
+#' LOWESS scatterplot smoothing using the function \code{lowess} is plotted 
+#' in blue. Counterfactuals in the convex hull are plotted with a solid line 
+#' and counterfactuals outside of the convex hull with a dashed line.
+#' 
+#' @return 
+#' A graph printed to the screen or an encapsulated postscript file saved
+#' to your working directory.  In the latter case, the file name has form
+#' \code{graph_'type'_'numcf'.eps}', where \code{'type'} and \code{'numcf'}
+#' are the values of the respective arguments.  
 #'
 #' @examples 
 #'  Create example data sets and counterfactuals

@@ -2,8 +2,15 @@
 #' 
 #' Prints the information generated from the \code{whatif} output object 
 #' by a call to \code{summary}, which is stored in an object of class 
-#' "summary.whatif".  
-#'
+#' "summary.whatif". 
+#' 
+#' @param x An object of class "summary.whatif", the output of
+#' the function \code{summary.whatif}.
+#' 
+#' @return 
+#' A printout to the screen of the \code{whatif} information summarized 
+#' in the \code{summary.whatif} output object.
+#' 
 #' @examples 
 #' Create example data sets and counterfactuals
 #' 

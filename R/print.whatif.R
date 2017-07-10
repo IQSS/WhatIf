@@ -1,8 +1,20 @@
 #' Print Whatif
 #'
 #' Prints the information produced by the function \code{whatif},
-#' an object of class "whatif", to the screen.  
-#'
+#' an object of class "whatif", to the screen. 
+#' 
+#' @param x An object of class "whatif", the output of the
+#' function \code{whatif}.
+#' @param print.dist A Boolean; should the matrix of pairwise 
+#' distances between each counterfactual and data point be printed to
+#' the screen, if it was returned?  Default is \code{FALSE}.
+#' @param \item{print.freq}{A Boolean; should the matrix of cumulative
+#' frequencies of distances for each counterfactual be printed
+#' to the screen?  Default is \code{FALSE}.}
+#' 
+#' @return A printout to the screen of the information contained in the 
+#' \code{whatif} output object.
+#' 
 #' @examples
 #'  my.cfact <- matrix(rnorm(3*5), ncol = 5)
 #'  my.data <- matrix(rnorm(100*5), ncol = 5)
