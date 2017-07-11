@@ -1,5 +1,12 @@
 ## WhatIf
 
+**Release:**
+[![CRAN Version](http://www.r-pkg.org/badges/version/WhatIf)](http://cran.r-project.org/package=WhatIf)
+![CRAN Monthly Downloads](http://cranlogs.r-pkg.org/badges/last-month/WhatIf)
+![CRAN Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/WhatIf)
+
+**Development:**
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Travis-CI Build Status](https://travis-ci.org/IQSS/WhatIf.svg?branch=master)](https://travis-ci.org/IQSS/WhatIf)
 
 Inferences about counterfactuals are essential for prediction, answering what if questions, and estimating causal effects. However, when the counterfactuals posed are too far from the data at hand, conclusions drawn from well-specified statistical analyses become based largely on speculation hidden in convenient modeling assumptions that few would be willing to defend. 
