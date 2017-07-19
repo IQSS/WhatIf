@@ -8,6 +8,7 @@
 **Development:**
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Travis-CI Build Status](https://travis-ci.org/IQSS/WhatIf.svg?branch=master)](https://travis-ci.org/IQSS/WhatIf)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/IQSS/WhatIf?branch=master&svg=true)](https://ci.appveyor.com/project/IQSS/WhatIf)
 
 Inferences about counterfactuals are essential for prediction, answering what if questions, and estimating causal effects. However, when the counterfactuals posed are too far from the data at hand, conclusions drawn from well-specified statistical analyses become based largely on speculation hidden in convenient modeling assumptions that few would be willing to defend. 
 

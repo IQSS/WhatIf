@@ -4,3 +4,4 @@ Readme.markdown
 ^\.iqss_reportcard\.yml$
 docs/*
 ^\.travis\.yml$
+^appveyor\.yml$

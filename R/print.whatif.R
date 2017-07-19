@@ -14,6 +14,7 @@
 #'  print(my.result)
 #' 
 #' @export
+
 print.whatif <- function(x, print.dist = FALSE, print.freq = FALSE, ...)  {
 
    x$in.hull <- as.character(x$in.hull)
