@@ -13,6 +13,8 @@ specified in the `whatif` call with the `mc.cores` argument.
 
 # Minor changes
 
+-   Additional tests added.
+
 -   Progress bar added to `whatif` convex hull test to indicate progress.
 
 -   Travis CI added for continuous integration testing.
