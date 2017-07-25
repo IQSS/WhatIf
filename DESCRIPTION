@@ -1,7 +1,7 @@
 Package: WhatIf
 Title: Evaluate Counterfactuals
 Version: 1.5-9
-Date: 2017-07-24
+Date: 2017-07-25
 Authors@R: c(
     person("Christopher", "Gandrud", email = "zelig.zee@gmail.com",
     role = c("aut", "cre")),
@@ -26,10 +26,10 @@ Description: Inferences about counterfactuals are essential for prediction,
       no matter what method of inference one chooses to use. WhatIf
       implements the methods for evaluating counterfactuals discussed in
       Gary King and Langche Zeng, 2006, "The Dangers of Extreme
-      Counterfactuals," Political Analysis 14 (2) <DOI: 10.1093/pan/mpj004>; 
+      Counterfactuals," Political Analysis 14 (2) <DOI:10.1093/pan/mpj004>; 
       and Gary King and Langche Zeng, 2007, "When Can History Be Our Guide? The 
       Pitfalls of Counterfactual Inference," International Studies 
-      Quarterly 51 (March) <DOI: 10.1111/j.1468-2478.2007.00445.x>.
+      Quarterly 51 (March) <DOI:10.1111/j.1468-2478.2007.00445.x>.
 License: GPL (>=3)
 URL: http://gking.harvard.edu/whatif
 BugReports: https://github.com/IQSS/WhatIf/issues
