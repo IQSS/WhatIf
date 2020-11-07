@@ -21,7 +21,6 @@
 #' 
 #' @importFrom parallel detectCores mclapply 
 #' @importFrom pbmcapply pbmclapply
-#' @importFrom Zelig zelig_setx_to_df
 #' @importFrom utils read.table setTxtProgressBar txtProgressBar
 #' @importFrom lpSolve lp
 #' @importFrom stats complete.cases delete.response model.frame model.matrix na.fail na.omit terms update.formula
@@ -36,13 +35,6 @@ whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
     #DATA PROCESSING AND RELATED USER INPUT ERROR CHECKING
     #Initial processing of cfact
   message("Preprocessing data ...")
-
-    if (grepl('Zelig*', class(data)) & missing(cfact))
-        cfact <- zelig_setx_to_df(data)
-    if (grepl('Zelig*', class(data)) & !missing(cfact)) {
-        formula <- formula(delete.response(terms(data$formula)))
-        data <- data$zelig.out$z.out[[1]]$model
-    }
 
   if(!((is.character(cfact) && is.vector(cfact) && length(cfact) == 1) ||
        is.data.frame(cfact) || (is.matrix(cfact) && !is.character(cfact)))) {

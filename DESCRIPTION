@@ -3,7 +3,7 @@ Title: Evaluate Counterfactuals
 Version: 1.5-9
 Date: 2017-07-25
 Authors@R: c(
-    person("Christopher", "Gandrud", email = "zelig.zee@gmail.com",
+    person("Christopher", "Gandrud", email = "soubhikbarari@gmail.com",
     role = c("aut", "cre")),
     person("Gary", "King", role = "aut"),
     person("Ben", "Sabath", role = "ctb"),
@@ -36,8 +36,7 @@ BugReports: https://github.com/IQSS/WhatIf/issues
 Depends: R (>= 2.3.1)
 Imports:
     lpSolve,
-    pbmcapply,
-    Zelig (>= 5.0-17)
+    pbmcapply
 Suggests:
     testthat
 RoxygenNote: 6.0.1
