@@ -6,6 +6,8 @@ data("peacef")
 data("peacecf")
 
 test_that('FAIL Test: reject bad cfact inputs', {
+    skip_on_cran()
+    
     ## missing cfact test
     expect_error(whatif(data = peacef),
                  regexp = 'argument "cfact" is missing, with no default')
@@ -27,6 +29,7 @@ test_that('FAIL Test: reject bad cfact inputs', {
 })
 
 test_that('FAIL Test: reject bad data inputs', {
+    skip_on_cran()
     
     ## data argument is missing
     expect_error(whatif(cfact = peacecf), 
@@ -49,6 +52,8 @@ test_that('FAIL Test: reject bad data inputs', {
 })
 
 test_that('Fail Test: reject bad formulas',{
+    skip_on_cran()
+    
     ## check formula label requirement
     expect_error(whatif(data = peacef, cfact = peacecf, formula = ~x),
                  regexp = "variables in 'formula' either unlabeled or not present in 'data'")

@@ -1,4 +1,6 @@
 test_that("REQUIRE TEST whatif with 1 counterfactual", {
+    skip_on_cran()
+    
     my.cfact <- matrix(rnorm(3*5), ncol = 5)
     my.data <- matrix(rnorm(100*5), ncol = 5)
     
