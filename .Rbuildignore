@@ -5,3 +5,8 @@ Readme.markdown
 docs/*
 ^\.travis\.yml$
 ^appveyor\.yml$
+^.*\.gitignore
+.git
+^.*\.git
+^.*\.DS_Store
+README.md

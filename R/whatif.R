@@ -28,7 +28,7 @@
 whatif <- function(formula = NULL, data, cfact, range = NULL, freq = NULL,
                    nearby = 1,  distance = "gower", miss = "list",
                    choice= "both", return.inputs = FALSE,
-                   return.distance = FALSE, mc.cores = detectCores(), ...)  {
+                   return.distance = FALSE, mc.cores = 1, ...)  {
     if (mc.cores <= 0)
         stop("mc.cores must be an integer greater than 0.", call. = FALSE)
 

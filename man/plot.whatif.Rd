@@ -49,11 +49,11 @@
 }
 \references{King, Gary and Langche Zeng.  2006.  "The Dangers of
   Extreme Counterfactuals."  \emph{Political Analysis} 14 (2).
-  Available from \url{http://GKing.Harvard.Edu}.
+  Available from \url{https://gking.Harvard.Edu}.
 
   King, Gary and Langche Zeng.  2007.  "When Can History Be Our Guide?
   The Pitfalls of Counterfactual Inference."  \emph{International Studies Quarterly}
-  51 (March).  Available from \url{http://gking.harvard.edu}.}
+  51 (March).  Available from \url{https://gking.harvard.edu}.}
 \author{Stoll, Heather \email{hstoll@polsci.ucsb.edu}, King, Gary
   \email{king@harvard.edu} and Zeng, Langche \email{zeng@ucsd.edu}}
 \seealso{

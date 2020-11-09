@@ -1,15 +1,11 @@
 Package: WhatIf
-Title: Evaluate Counterfactuals
-Version: 1.5-9
-Date: 2017-07-25
-Authors@R: c(
-    person("Christopher", "Gandrud", email = "soubhikbarari@gmail.com",
-    role = c("aut", "cre")),
-    person("Gary", "King", role = "aut"),
-    person("Ben", "Sabath", role = "ctb"),
-    person("Heather", "Stoll", role = "aut"),
-    person("Langche", "Zeng", role = "aut")
-    )
+Title: Software for Evaluating Counterfactuals
+Version: 1.5-10
+Date: 2020-11-08
+Author: Heather Stoll <hstoll@polsci.ucsb.edu>, Gary King
+        <king@harvard.edu>, Langche Zeng <zeng@ucsd.edu>,
+        Christopher Gandrud <zelig.zee@gmail.com>, Ben Sabath
+Maintainer: Soubhik Barari <soubhikbarari@gmail.com>
 Description: Inferences about counterfactuals are essential for prediction,
       answering what if questions, and estimating causal effects.
       However, when the counterfactuals posed are too far from the data at
@@ -31,12 +27,13 @@ Description: Inferences about counterfactuals are essential for prediction,
       Pitfalls of Counterfactual Inference," International Studies 
       Quarterly 51 (March) <DOI:10.1111/j.1468-2478.2007.00445.x>.
 License: GPL (>=3)
-URL: http://gking.harvard.edu/whatif
+URL: https://gking.harvard.edu/whatif
 BugReports: https://github.com/IQSS/WhatIf/issues
 Depends: R (>= 2.3.1)
 Imports:
     lpSolve,
-    pbmcapply
+    pbmcapply,
+    parallel
 Suggests:
     testthat
 RoxygenNote: 6.0.1
